@@ -3,13 +3,6 @@ TESTNET: User Guide for Hashed Time-Lock Contracts (HTLC) on BitShares
 
 [国语翻译](https://github.com/bitshares/bitshares-core/wiki/HTLC-(CN))
 
-**Note:** __This documentation applies to the BitShares **Public TESTNET only**. HTLC is not yet__
-__implemented on MAINNET.__
-
-**Note:** __The BitShares HTLC implementation is **beta software** and should be used for__ 
-__experimentation purposes only. The software may not perform as designed and you may lose value__
-__as a result.__
-
 **Note:** __The BitShares UI Web Wallet does not yet implement the HTLC features. Therefore, one__
 __must use the BitShares CLI (command line wallet) to interact with HTLC directly. The UI Team is__
 __working with the Core Team to implement the required graphical interface prior to mainnet release.__
