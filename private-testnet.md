@@ -8,9 +8,9 @@ Genesis creation
 First, create a subdirectory named `genesis` and create a file within it
 named `my-genesis.json`. This file dictates the initial state of the network.
 
-You can use the existing public testnet `genesis.json` file as an example.
+You can use the existing developer `genesis.json` file as an example.
 That file can be found at 
-https://github.com/bitshares/bitshares-core/blob/testnet/genesis.json
+https://github.com/bitshares/bitshares-core/blob/master/libraries/egenesis/genesis-dev.json
 
 The rest of these instructions assume you create your `my-genesis.json` 
 file in a subdirectory named `genesis`.
