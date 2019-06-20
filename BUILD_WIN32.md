@@ -38,27 +38,27 @@ git submodule update --init --recursive
 
 * Boost
 
-   BitShares Core depends on the Boost libraries version 1.57 ~ 1.65.  You can build them from
+   BitShares Core depends on the Boost libraries version 1.58 ~ 1.69.  You can build them from
    source.
    * download boost source from http://www.boost.org/users/download/
    * unzip it to the base directory `D:\bitshares`.
-   * This will create a directory like `D:\bitshares\boost_1_57_0`.
+   * This will create a directory like `D:\bitshares\boost_1_69_0`.
 
 * OpenSSL
 
-   BitShares Core depends on OpenSSL version 1.0.1 or 1.0.2, and you must build this from source.
+   BitShares Core depends on OpenSSL version 1.0.x or 1.1.x, and you must build this from source.
     * download OpenSSL source from http://www.openssl.org/source/
     * Untar it to the base directory `D:\bitshares`
-    * this will create a directory like `D:\bitshares\openssl-1.0.1g`.
+    * this will create a directory like `D:\bitshares\openssl-1.1.1c`.
 
 At the end of this, your base directory should look like this (directory names will
 be slightly different for the 64bit versions):
 ```
 D:\bitshares
 +- bitshares-core
-+- boost_1_57_0
++- boost_1_69_0
 +- CMake
-+- openssl-1.0.1g
++- openssl-1.1.1c
 ```
 
 #### Build the library dependencies ####
@@ -76,10 +76,10 @@ Put this into the notepad window, then save and quit.
 ```
 @echo off
 set GRA_ROOT=d:\bitshares
-set OPENSSL_ROOT=%GRA_ROOT%\openssl-1.0.1g
+set OPENSSL_ROOT=%GRA_ROOT%\openssl-1.1.1c
 set OPENSSL_ROOT_DIR=%OPENSSL_ROOT%
 set OPENSSL_INCLUDE_DIR=%OPENSSL_ROOT%\include
-set BOOST_ROOT=%GRA_ROOT%\boost_1_57_0
+set BOOST_ROOT=%GRA_ROOT%\boost_1_69_0
 
 set PATH=%GRA_ROOT%\CMake\bin;%BOOST_ROOT%\lib;%PATH%
 
@@ -97,7 +97,7 @@ setenv_x64.bat
 * Build OpenSSL DLLs
 ```
 D:
-cd D:\bitshares\openssl-1.0.1g
+cd D:\bitshares\openssl-1.1.1c
 perl Configure VC-WIN64A --prefix=D:\bitshares\OpenSSL
 ms\do_win64a
 nmake -f ms\ntdll.mak
@@ -110,7 +110,7 @@ nmake -f ms\ntdll.mak install
 * Build Boost
 ```
 D:
-cd D:\bitshares\boost_1_57_0
+cd D:\bitshares\boost_1_69_0
 bootstrap
 .\b2.exe address-model=64
 ```
