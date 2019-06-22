@@ -3,7 +3,7 @@ Windows development environment setup and build instruction
 This is an informal build environment setup instruction, it is not recommended to apply in production.
 #### Prerequisites ####
 * 64 bit windows operating system
-* Microsoft Visual C++ 2015 Update 1, download address can be found at https://gist.github.com/CHEF-KOCH/ebd07873bb4b343613db (the community edition will work, any newer version of visual studio will not work)
+* Microsoft Visual C++ 2015 Update 1, download address can be found at https://gist.github.com/CHEF-KOCH/ebd07873bb4b343613db (the community edition will work, Visual Studio 2019 may not work, other versions may or may not work)
 * git for windows (Git-2.18.0-64-bit)
 * cmake (cmake-3.12.1-win64-x64)
 
