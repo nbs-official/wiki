@@ -1,3 +1,5 @@
+Note: this documents is a copy of "Build" section of [README.md](https://github.com/bitshares/bitshares-core/blob/develop/README.md), it may be stale, please check README.md for latest info.
+
 # Ubuntu 16.04 LTS (64-bit) Build and Install Instructions
 The following dependencies were necessary for a clean install on Ubuntu 16.04 LTS (64-bit):
 
@@ -13,22 +15,7 @@ The following dependencies were necessary for a clean install on Ubuntu 16.04 LT
     make 
 
 ## Build Support Boost Version
-NOTE: BitShares requires a Boost version in the range [1.57 - 1.65.1]. Versions earlier than 1.57 or newer than 1.65.1 are NOT supported. If your system's Boost version is newer, then you will need to manually build an older version of Boost and specify it to CMake using DBOOST_ROOT.
+NOTE: BitShares requires a Boost version in the range [1.58 - 1.69]. Newer versions may work, but have not been tested. If your system came pre-installed with a version of Boost that you do not wish to use, you may manually build your preferred version and use it with BitShares by specifying it on the CMake command line. Example:
 
-The Boost which ships with Ubuntu 14.04 LTS (64-bit) is too old.  You need to download the Boost tarball for Boost 1.57.0
-(Note, 1.58.0 requires C++14 and will not build on Ubuntu 14.04 LTS (64-bit); this requirement was an accident, see [this mailing list post](http://boost.2283326.n4.nabble.com/1-58-1-bugfix-release-necessary-td4674686.html)).
-
-    BOOST_ROOT=$HOME/opt/boost_1_57_0
-    sudo apt-get update
-    sudo apt-get install autotools-dev build-essential libbz2-dev libicu-dev python-dev
-    wget -c 'http://sourceforge.net/projects/boost/files/boost/1.57.0/boost_1_57_0.tar.bz2/download' -O boost_1_57_0.tar.bz2
-    [ $( sha256sum boost_1_57_0.tar.bz2 | cut -d ' ' -f 1 ) == "910c8c022a33ccec7f088bd65d4f14b466588dda94ba2124e78b8c57db264967" ] || ( echo 'Corrupt download' ; exit 1 )
-    tar xjf boost_1_57_0.tar.bz2
-    cd boost_1_57_0/
-    ./bootstrap.sh "--prefix=$BOOST_ROOT"
-    ./b2 install
-
-Build with specific Boost version:
-
-    cmake -DBOOST_ROOT="$BOOST_ROOT" -DCMAKE_BUILD_TYPE=Release .
+    cmake -DBOOST_ROOT=/path/to/boost -DCMAKE_BUILD_TYPE=Release .
     make
