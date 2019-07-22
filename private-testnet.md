@@ -107,6 +107,8 @@ and set the following settings, uncommenting them if necessary:
 
     private-key = ["GPH6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV","5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3"]
 
+    required-participation = 0
+
     witness-id = "1.6.1"
     witness-id = "1.6.2"
     witness-id = "1.6.3"
