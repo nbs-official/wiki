@@ -1,3 +1,7 @@
+UPDATE(2019-07-25): please check the "requirements" table in [README](https://github.com/bitshares/bitshares-core/blob/master/README.md#getting-started) for latest requirements to run the software.
+
+***
+
 The BitShares blockchain is big and Graphene technology stores all the data into RAM at chain replay. Currently(2017-09-04) a full node requires 40GB of RAM. Most of the time a full node with everything loaded is not needed and expensive due to the amount of memory the machine need to have available. RAM usage can be reduced significantly by using `witness_node` executable options.
 
 Here are the 4 new options you can use to reduce RAM:
@@ -62,7 +66,7 @@ We found out that most of the blockchain size is actually history of millions of
 
 This parameter allows to go deleting the oldest operation history from all accounts. Balances and everything will still be fine, please remember this is only deleting history.
 
-By limiting the number of operations per account to 1000 the blockchain decrease in size is more than notorious and will allow you to run nodes in reduced memory machines, can run with 4-5 gigs by using combinations around this option.
+By limiting the number of operations per account to 1000 the blockchain decrease in size is more than notorious and will allow you to run nodes in reduced memory machines, can run with 4-5 gigs (on 2017-09-04) by using combinations around this option.
 
 Reduce the number of operations for each account that the node will save in the blockchain to 100 by starting with:
 
@@ -86,7 +90,7 @@ I personally start my nodes with 1000 ops per account and partial operations:
 
 `programs/witness_node/witness_node --data-dir data/my-blockprod --rpc-endpoint "127.0.0.1:8090" --max-ops-per-account 1000 --partial-operations true`
 
-This will allow me to run the node with less than 5 gigs(4.820492G):
+This will allow me to run the node with less than 5 gigs(4.820492G) (on 2017-09-04):
 
 ```
 ffffffffff600000      4K r-x--   [ anon ]
@@ -96,4 +100,4 @@ root@alfredo:~# pmap 28685
 
 ## Special notes
 
-- A new option could be `untrack-account`. we could identify the biggers and run a node with the account history of bots out.
+- A new option could be `untrack-account` (not implemented yet). we could identify the biggers and run a node with the account history of bots out.
