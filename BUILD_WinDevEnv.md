@@ -1,5 +1,7 @@
-Windows development environment setup and build instruction
+Note: This has been superseded by [BUILD_WIN32](/bitshares/bitshares-core/wiki/BUILD_WIN32)
 ============================
+Windows development environment setup and build instruction
+
 This is an informal build environment setup instruction, it is not recommended to apply in production.
 #### Prerequisites ####
 * 64 bit windows operating system
