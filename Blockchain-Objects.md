@@ -23,7 +23,7 @@ Some examples:
     2.3.8    # implementation space / asset . id: 8
 
 A programmatic description of all fields can be found in the
-[sources](https://github.com/cryptonomex/graphene/blob/master/libraries/chain/include/graphene/chain/protocol/types.hpp).
+[sources](https://github.com/cryptonomex/graphene/blob/master/libraries/chain/include/graphene/chain/protocol/types.hpp). Another helpful document can be found at [Blockchain Objects and their Identifiers](https://dev.bitshares.works/en/master/api/blockchain-objects-ids.html).
 
 Accounts
 --------
