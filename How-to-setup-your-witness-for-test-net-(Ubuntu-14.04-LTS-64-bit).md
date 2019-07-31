@@ -19,7 +19,7 @@ If you cannot install gcc-4.9, you will need to add this repository before hand 
 
     sudo add-apt-repository ppa:ubuntu-toolchain-r/test
 
-###Installation of BOOST
+### Installation of BOOST
 
     BOOST_ROOT=$HOME/opt/boost_1_57_0
     sudo apt-get update
