@@ -4,7 +4,7 @@ You can get latest version with chain id, genesis, and github tag here https://g
 
 Note: Nodes might gone down as everyone is testing.
 
-##Installation of dependencies
+## Installation of dependencies
 Extracted from instructions here: https://github.com/cryptonomex/graphene/wiki/build-ubuntu, but limited only for witness / cli build.
 
 If you already have done your installation move to next step
@@ -31,7 +31,7 @@ If you cannot install gcc-4.9, you will need to add this repository before hand 
     ./bootstrap.sh "--prefix=$BOOST_ROOT"
     ./b2 install
 
-##Git  checkout and build
+### Git  checkout and build
 Ensure your boost path is correct
 
     BOOST_ROOT=$HOME/opt/boost_1_57_0
@@ -53,7 +53,7 @@ Update submodules and build make file
     make 
 
 
-##Setup witness / import balances
+## Setup witness / import balances
 
 _Navigate to the witness directory_
 
@@ -127,7 +127,7 @@ _Restart with parameters to start block producing (block producing needs your wi
 _See your witness producing blocks and 
 you can Ctrl A Ctrl D to detach from screen._
 
-##Tips
+## Tips
 
 If you end up in a fork, or your blockchain gets corrupted it takes a long time to replay blockchain.
 
@@ -137,5 +137,5 @@ If you end up in a fork, or your blockchain gets corrupted it takes a long time 
 
 >spartako
 
-##Credits
+## Credits
 xeroc, puppies, abit, clayop, betax, maqifrnswa, lafona, IHashfury, Riverhead, testz,  cryptosile, Thom, spartako
