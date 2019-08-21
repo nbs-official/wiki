@@ -122,3 +122,16 @@ Ignored by receiving node.
 
 The P2P layer handles them both in the same way: if they were sent unsolicited, they are ignored. If they were asked for, they are forwarded to the application layer and processed. If processing was successful, they are added to the list of known items, which is then broadcast to all connected peers.
 
+### item_ids_inventory_message
+
+advertise_inventory_loop generates and broadcasts [item_ids_inventory_message](item_ids_inventory_message) to all connected peers whenever new items appear in the local inventory. Only "new" items are sent to a peer, i. e. items that we have neither sent to nor received from it.
+
+When such a message is received from a peer, all items that are not locally available yet are added to our knowledge of the peer's inventory, and will eventually be fetched by the fetch_items loop.
+
+Note: the cache timeout for detecting "new" items per peer is GRAPHENE_NET_MAX_INVENTORY_SIZE_IN_MINUTES (currently 2).
+
+### fetch_items_message
+
+[fetch_items_message](https://github.com/bitshares/bitshares-core/blob/test-3.2.1/libraries/net/include/graphene/net/core_messages.hpp#L163-L168) is used by fetch_items_loop to request items from peers.
+
+Upon receiving a fetch_items_message, the node responds with one message per requested item. For items that it doesn't know about it sends an [item_not_available_message](item_not_available_message), for others it replies with a corresponding trx_message or block_message, depending on the requested item type.
