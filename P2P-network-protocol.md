@@ -39,7 +39,7 @@ P2P connections are typically long-lived. A node will try to connect to a certai
 
 ### Handshake
 
-After setting up encryption, both peers send a [hello_message](https://github.com/bitshares/bitshares-core/blob/3.2.1/libraries/net/include/graphene/net/core_messages.hpp#L68-L87) to each other. Both sides perform some sanity checking on the hello_messages they receive, and reply with either [connection_accepted_message](https://github.com/bitshares/bitshares-core/blob/3.2.1/libraries/net/include/graphene/net/core_messages.hpp#L225-L230) or [connection_rejected_message](https://github.com/bitshares/bitshares-core/blob/3.2.1/libraries/net/include/graphene/net/core_messages.hpp#L225-L230). In the latter case, they also initiate disconnecting the peer.
+After setting up encryption, both peers send a [hello_message](https://github.com/bitshares/bitshares-core/blob/3.2.1/libraries/net/include/graphene/net/core_messages.hpp#L68-L87) to each other. Both sides perform some sanity checking on the hello_messages they receive, and reply with either [connection_accepted_message](https://github.com/bitshares/bitshares-core/blob/3.2.1/libraries/net/include/graphene/net/core_messages.hpp#L225-L230) or [connection_rejected_message](https://github.com/bitshares/bitshares-core/blob/3.2.1/libraries/net/include/graphene/net/core_messages.hpp#L241-L249). In the latter case, they also initiate disconnecting the peer.
 
 After receiving a connection_accepted_message, a node will request its peer's peers by sending an address_request_message. Also, if it doesn't know its own firewall status, or considers its knowledge stale, it will send a check_firewall_message.
 
