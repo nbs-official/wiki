@@ -98,7 +98,7 @@ If the receiving node had forwarded the request, it forwards the reply to the or
 
 ### current_time_request_message
 
-[current_time_request_message](https://github.com/bitshares/bitshares-core/blob/test-3.2.1/libraries/net/include/graphene/net/core_messages.hpp#L365-L370) is sent after a successful handshake, and also in regular intervals on otherwise idle connections (as a keepalive mechanism).
+[current_time_request_message](https://github.com/bitshares/bitshares-core/blob/3.2.1/libraries/net/include/graphene/net/core_messages.hpp#L323-L326) is sent after a successful handshake, and also in regular intervals on otherwise idle connections (as a keepalive mechanism).
 
 Upon receiving one, a node immediately sends back a [current_time_reply_message](https://github.com/bitshares/bitshares-core/blob/test-3.2.1/libraries/net/include/graphene/net/core_messages.hpp#L334-L339).
 
@@ -122,7 +122,7 @@ The P2P layer handles them both in the same way: if they were sent unsolicited, 
 
 ### item_ids_inventory_message
 
-advertise_inventory_loop generates and broadcasts [item_ids_inventory_message](item_ids_inventory_message) to all connected peers whenever new items appear in the local inventory. Only "new" items are sent to a peer, i. e. items that we have neither sent to nor received from it.
+advertise_inventory_loop generates and broadcasts [item_ids_inventory_message](https://github.com/bitshares/bitshares-core/blob/3.2.1/libraries/net/include/graphene/net/core_messages.hpp#L117-L122) to all connected peers whenever new items appear in the local inventory. Only "new" items are sent to a peer, i. e. items that we have neither sent to nor received from it.
 
 When such a message is received from a peer, all items that are not locally available yet are added to our knowledge of the peer's inventory, and will eventually be fetched by the fetch_items loop.
 
@@ -142,7 +142,7 @@ The message is ignored if the corresponding item wasn't requested.
 
 ### fetch_blockchain_item_ids_message
 
-[fetch_blockchain_item_ids_message](https://github.com/bitshares/bitshares-core/blob/3.2.1/libraries/net/include/graphene/net/core_messages.hpp#L149-L154) and its response counterpart, [fetch_blockchain_item_ids_message](https://github.com/bitshares/bitshares-core/blob/3.2.1/libraries/net/include/graphene/net/core_messages.hpp#L131-L137), form the backbone of the blockchain synchronization mechanism. Sychronization with a peer is started immediately after the initial handshake has been completed, and re-triggered whenever a new block has been applied to the chain successfully.
+[fetch_blockchain_item_ids_message](https://github.com/bitshares/bitshares-core/blob/3.2.1/libraries/net/include/graphene/net/core_messages.hpp#L149-L154) and its response counterpart, [blockchain_item_ids_inventory_message](https://github.com/bitshares/bitshares-core/blob/3.2.1/libraries/net/include/graphene/net/core_messages.hpp#L131-L137), form the backbone of the blockchain synchronization mechanism. Sychronization with a peer is started immediately after the initial handshake has been completed, and re-triggered whenever a new block has been applied to the chain successfully.
 
 The message contains a [synopsis](https://github.com/bitshares/bitshares-core/blob/3.2.1/libraries/app/application.cpp#L747-L804) of the undoable blocks the sending node has on its main chain. The receiving node compares this with its own list of known blocks. The following outcomes are possible:
 
