@@ -45,7 +45,7 @@ After receiving a connection_accepted_message, a node will request its peer's pe
 
 After receiving a connection_rejected_message, a node will also send an address_request_message, although it may be unlikely(?) to receive a response before the connection is closed.
 
-During the handshake, the node keeps the connection in its "handshaking" list. After a successful handshake (i. e. after receiving an address_message in reply to the initial address_request_message, or, for inbound connections, after receiving a fetch_blockchain_item_ids_message), the node moves the connection into its "active" list and sends a current_time_request_message to the peer.
+During the handshake, the node keeps the connection in its "handshaking" list. After a successful handshake (i. e. after receiving an address_message in reply to the initial address_request_message, or, for inbound connections, after receiving a fetch_blockchain_item_ids_message), the node moves the connection into its "active" list and sends a current_time_request_message to the peer. Finally, it starts the [synchronization process](#fetch_blockchain_item_ids_message) with the new peer.
 
 The handshake can also time out, which leads to the connection being closed.
 
@@ -120,7 +120,7 @@ Ignored by receiving node.
 
 [trx_message](https://github.com/bitshares/bitshares-core/blob/test-3.2.1/libraries/net/include/graphene/net/core_messages.hpp#L93-L97)s contain transactions and [block_message](https://github.com/bitshares/bitshares-core/blob/test-3.2.1/libraries/net/include/graphene/net/core_messages.hpp#L104-L113)s contain blocks (obviously).
 
-The P2P layer handles them both in the same way: if they were sent unsolicited, they are ignored. If they were asked for, they are forwarded to the application layer and processed. If processing was successful, they are added to the list of known items, which is then broadcast to all connected peers.
+The P2P layer handles them both in the same way: if they were sent unsolicited, they are ignored. If they were asked for, they are forwarded to the application layer and processed, i. e. transactions are applied to the chain and blocks are either applied or added to the fork database. If processing was successful, they are added to the list of known items, which is then broadcast to all connected peers.
 
 ### item_ids_inventory_message
 
@@ -135,3 +135,33 @@ Note: the cache timeout for detecting "new" items per peer is GRAPHENE_NET_MAX_I
 [fetch_items_message](https://github.com/bitshares/bitshares-core/blob/test-3.2.1/libraries/net/include/graphene/net/core_messages.hpp#L163-L168) is used by fetch_items_loop to request items from peers.
 
 Upon receiving a fetch_items_message, the node responds with one message per requested item. For items that it doesn't know about it sends an [item_not_available_message](item_not_available_message), for others it replies with a corresponding trx_message or block_message, depending on the requested item type.
+
+### item_not_available_message
+
+When a node receives this in response to a fetch_items_message requesting that item, it is removed from our cache of the peer's inventory. If it was a sync item, the node stops fetching blocks from that peer, and possibly disconnects.
+
+The message is ignored if the corresponding item wasn't requested.
+
+### fetch_blockchain_item_ids_message
+
+[fetch_blockchain_item_ids_message](https://github.com/bitshares/bitshares-core/blob/3.2.1/libraries/net/include/graphene/net/core_messages.hpp#L149-L154) and its response counterpart, [fetch_blockchain_item_ids_message](https://github.com/bitshares/bitshares-core/blob/3.2.1/libraries/net/include/graphene/net/core_messages.hpp#L131-L137), form the backbone of the blockchain synchronization mechanism. Sychronization with a peer is started immediately after the initial handshake has been completed, and re-triggered whenever a new block has been applied to the chain successfully.
+
+The message contains a [synopsis](https://github.com/bitshares/bitshares-core/blob/3.2.1/libraries/app/application.cpp#L747-L804) of the undoable blocks the sending node has on its main chain. The receiving node compares this with its own list of known blocks. The following outcomes are possible:
+
+1. The receiving peer is on a fork that is unreachable for the sender, i. e. the synopsis contains no block IDs that are on its main chain.
+2. The peers are on different forks but the sender could switch if it wanted to.
+3. The receiver is ahead of the sender, i. e. it has blocks that the other one needs.
+4. The peers are in sync.
+5. The receiver is behind the sender and needs blocks from them.
+
+In the first case (unreachable fork), the node replies with empty list, then disconnects the sender.
+In all other cases, the node replies with a (possibly empty) list of up to 2000 block IDs from its main chain that it thinks the sender needs. 
+In addition, in cases 2 (reachable fork) and 5 (receiver behind sender), the receiving node also restarts synchronization with the peer by sending a new fetch_blockchain_item_ids_message.
+
+Note: a node never sends item IDs that are not on its main chain, even if the sender is on a fork that it knows about.
+
+### blockchain_item_ids_inventory_message
+
+If this message is received unsolicited, i. e. not in response to a previously sent fetch_blockchain_item_ids_message, it is ignored.
+
+Otherwise, the contained list is checked for plausibility, and if successful it is merged into the cached list of blocks the peer knows about. If the sending peer has items that the receiving node needs, the fetch_sync_items_loop is triggered, otherwise another batch of item IDs is requested by sending a new fetch_blockchain_item_ids_message.
