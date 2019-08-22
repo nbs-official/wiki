@@ -28,7 +28,7 @@ For transmission, messages are padded to a multiple of 16 bytes. (16 bytes is th
 
 ### Messages
 
-Message types are defined in and data structures https://github.com/bitshares/bitshares-core/blob/3.2.1/libraries/net/include/graphene/net/core_messages.hpp#L68-L87 . Data structures are defined in the same file.
+Message types are defined in [libraries/net/include/graphene/net/core_messages.hpp](https://github.com/bitshares/bitshares-core/blob/3.2.1/libraries/net/include/graphene/net/core_messages.hpp#L68-L87). Data structures are defined in the same file.
 
 Unknown message types between 5000 and 5099 are silently ignored. They are assumed to be newer protocol messages.
 Message types outside this range are assumed to contain blockchain objects. Currently, this can be either stand-alone transactions, or blocks.
@@ -132,9 +132,9 @@ Note: the cache timeout for detecting "new" items per peer is GRAPHENE_NET_MAX_I
 
 ### fetch_items_message
 
-[fetch_items_message](https://github.com/bitshares/bitshares-core/blob/test-3.2.1/libraries/net/include/graphene/net/core_messages.hpp#L163-L168) is used by fetch_items_loop to request items from peers.
+[fetch_items_message](https://github.com/bitshares/bitshares-core/blob/test-3.2.1/libraries/net/include/graphene/net/core_messages.hpp#L163-L168) is used by fetch_items_loop and fetch_sync_items_loop to request items from peers.
 
-Upon receiving a fetch_items_message, the node responds with one message per requested item. For items that it doesn't know about it sends an [item_not_available_message](item_not_available_message), for others it replies with a corresponding trx_message or block_message, depending on the requested item type.
+Upon receiving a fetch_items_message, the node responds with one message per requested item. For items that it doesn't know about it sends an [item_not_available_message](https://github.com/bitshares/bitshares-core/blob/3.2.1/libraries/net/include/graphene/net/core_messages.hpp#L177-L181), for others it replies with a corresponding trx_message or block_message, depending on the requested item type.
 
 ### item_not_available_message
 
