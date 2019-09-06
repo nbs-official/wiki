@@ -8,7 +8,7 @@ Note that compiling BitShares Core is not required to use the software. Pre-buil
 * 64 bit windows operating system. Windows 10 was used for this document.
 
 ## Visual Studio ##
-Currently, only Microsoft Visual Studio 2017(15.9) or 2015 Update 1 or older can be used to compile BitShares-core. Visual Studio 2019 or newer will not work. This is being actively worked on.
+Visual studio 2019 is used by some in the core team. Visual Studio 2017 and 2015 Update 1 are known to have worked in the past. Assume that anything older is unsupported. The code contains C++14 features, so older compilers that do not support the features used will not work.
 
 ## Git ##
 Download Git for Windows [here](https://git-scm.com/download/win).
@@ -53,7 +53,6 @@ nmake install
 By default, this will put OpenSSL in your C:\Program Files\OpenSSL directory.
 
 ## Boost ##
-**Note** Boost version 1.70 and above is currently incompatible with BitShares. Use Boost versions between 1.58 and 1.69.
 
 Return to your C:\Development\cpp directory ("cd .." should get you there), then clone and compile the boost library by typing the following commands:
 ```
@@ -70,6 +69,7 @@ compiler| toolset parameter
 ---------- | ------------
 Visual Studio 2015| msvc-14.0
 Visual Studio 2017| msvc-14.1
+Visual Studio 2019| msvc-14.2
 
 ## libcurl ###
 Return to your C:\Development\cpp directory and type:
@@ -80,7 +80,7 @@ git checkout tags/curl-7_64_1
 biuldconf.bat
 mkdir curl-build
 cd curl-build
-cmake -G "Visual Studio 14 2015 Win64" -DCMAKE_USE_OPENSSL=ON -DCURL_DISABLE_FTP=ON -DCURL_DISABLE_LDAP=ON -DCURL_DISABLE_TELNET=ON -DCURL_DISABLE_DICT=ON -DCURL_DISABLE_FILE=ON -DCURL_DISABLE_TFTP=ON -DCURL_DISABLE_LDAPS=ON -DCURL_DISABLE_RTSP=ON -DCURL_DISABLE_POP3=ON -DCURL_DISABLE_IMAP=ON -DCURL_DISABLE_SMTP=ON -DCURL_DISABLE_GOPHER=ON -DCURL_STATICLIB=ON ..\
+cmake -G "Visual Studio 16 2019" -A x64 -DCMAKE_USE_OPENSSL=ON -DCURL_DISABLE_FTP=ON -DCURL_DISABLE_LDAP=ON -DCURL_DISABLE_TELNET=ON -DCURL_DISABLE_DICT=ON -DCURL_DISABLE_FILE=ON -DCURL_DISABLE_TFTP=ON -DCURL_DISABLE_LDAPS=ON -DCURL_DISABLE_RTSP=ON -DCURL_DISABLE_POP3=ON -DCURL_DISABLE_IMAP=ON -DCURL_DISABLE_SMTP=ON -DCURL_DISABLE_GOPHER=ON -DCURL_STATICLIB=ON ..\
 cmake --build . --target install --config Release
 ```
 ### Bitshares Core ###
@@ -89,7 +89,7 @@ Return once again to your C:\Development\cpp directory and type:
 git clone https://github.com/bitshares/bitshares-core
 cd bitshares-core
 git submodule update --init --recursive
-cmake -G "Visual Studio 14 2015 Win64" -DBOOST_ROOT=c:\Development\cpp\boost169 -DCURL_STATICLIB=ON -DCURL_LIBRARY="C:\Program Files\CURL\lib\libcurl_imp.lib" -DCURL_INCLUDE_DIR="C:\Program Files\CURL\include" -DOPENSSL_CONF_SOURCE="C:\Program Files\Common Files\SSL\openssl.cnf"
+cmake -G "Visual Studio 16 2019" -A x64 -DBOOST_ROOT=c:\Development\cpp\boost169 -DCURL_STATICLIB=ON -DCURL_LIBRARY="C:\Program Files\CURL\lib\libcurl_imp.lib" -DCURL_INCLUDE_DIR="C:\Program Files\CURL\include" -DOPENSSL_CONF_SOURCE="C:\Program Files\Common Files\SSL\openssl.cnf"
 cmake --build . --target install --config Release
 ```
 Upon success, you will have the applications compiled. You can find the application "witness_node" at `c:\Development\cpp\bitshares-core\programs\witness_node\witness_node.exe`. The application "cli_wallet" can be found at `c:\Development\cpp\bitshares-core\programs\cli_wallet\cli_wallet.exe`.
