@@ -1,6 +1,6 @@
-# ElasticSearch Plugin v1
+# ElasticSearch Plugins Suite
 
-The document explains motivations, technical challenges and sample use of a new plug-in created for bitshares to store account history data into an elasticsearch database.
+Store full account and object data into indexed elastisearch database.
 
 - [Motivation](#motivation)
 - [Database Selection](#the-database-selection)
@@ -29,69 +29,35 @@ The document explains motivations, technical challenges and sample use of a new 
 
 There are 2 main problems this plug-in tries to solve:
 
-- The amount of RAM needed to run a full node. Current options for this are basically store account history: yes/no, store some of the account history, track history for specific accounts, etc. Plugin allows to have all the account history data without the amount of RAM required in current implementation.
-- The number of github issues in regards to new api calls to lookup account history in different ways. `elasticsearch-plugin` will allow users to search account history querying directly into the database without the bitshares-core team creating and maintaining API calls for every case.
-
-Additionally we are after a secure way to store error free full account data. The huge amount of operations data involved in bitshares blockchain and the way it is serialized makes this a big challenge.
-
-Even more, saving data to Elastic Search database(from now on: ES) will bring additional value to clients connected to the new full node with real time statistics and fast access to data.
+- The amount of RAM needed to run a full node with all the account history. Huge.
+- Fast search inside operation fields directly querying the ES database.
 
 ## The database selection
 
 Elastic search was selected for the main following reasons:
 
-- open source.
-- fast.
-- index oriented.
-- easy to install and start using.
-- send data from c++ using curl.
-- scalable and decentralized nodes of data.
+- Open source.
+- Fast.
+- Index oriented.
+- Easy to install and start using.
+- Send data from c++ using curl.
+- Scalable and decentralized nodes of data possibilities.
 
 ## Technical
 
-The `elasticsearch-plugin` is uses the basics of `account_history_plugin`.
+The `elasticsearch` plugin when active is connected to each block the node receives. Operations are extracted in a similar logic of the classic `account_history_plugin` but sent to the ES database instead of storing internally. All fields from the operation are indexed for fast search.
 
-Here is how the current account_history plugin works basically:
-- with every signed block arriving to the plugin the ops are extracted from it.
-- each op is added to ohi(operation history index) and to ath(account transaction history index).
-- both indexes keep growing as new block gets in.
-- with the memory reduction techniques currently available the 2 indexes can remove early ops of accounts reducing ram size.
+The `es-objects` plugin when active is connected to config specified objects types(limit order objects, asset objects, etc).
 
-And now what `elasticsearch-plugin` attempts to do:
+Both plugins work in a similar way, data is collected in plugin internal database until a good amount of them(configurable) is available, then is sent as a `_bulk` operation to ES. `_bulk` needs to be big when replaying but much more smaller when we are in sync to display real time data to end users.
 
-- with every signed block arriving to the plugin the ops are extracted from it, just as in account_history.
-- create indexes ohi and ath and store current op there just as account history do. this a temp indexation of 1 op only that is done to remain compatible with the previous numbers used as id(1.11.X and 2.9.X).
-- send ath and ohi plus additional block data and visitor data into ES(actually we send them in bulks not one by one as we will explain below).
-- remove everything in the compatibility temporal indexes except for current operation. This way the indexes always have just 1 item and don't use any ram.
-
-### Replay and _bulk
-
-As mentioned we don't send to ES the operations one by one, this is because in a replay the number of ops will be so big that performance will decrease drastically and time to be in sync will be too much.
-For this reason we use the ES bulk api and send by default 10000 lines when we are in replay and downgrade this to 100 lines after we are in sync.
-
-ES bulk format is one line of meta-data and one line of data itself, so 10000 is actually 2500 operations we send on every bulk and 100 is actually 50 ops in real time mode.
-
-This values are available as plugin options to the user to change.
-
-The optimal number of docs to bulk is hardware dependent.
-
-The name of the created index in ES will be `graphene`
-
-### Accessing data inside operations
-
-There are cases where data coming from account transaction history index, operation history index and block data is not enough. We may want to index fields inside operations themselves like the fees, the asset id or the amount of transfer to make fast queries into them. 
-
-Data inside operations is saved as a text fields into ES, this means that we can't fast search into them as the data is not indexed, we can, still search by other data and filter converting the op text to json in client side. This is possible and relatively easy so please consider.
-
-Still, a workaround the limitation is available. A `visitor` that can be turned on/off by the command line. As an example something in common all ops have is a fee field with `asset_id` and `amount`. In `elasticserch-plugin` v1 when visitor is `true` this 2 values will be saved meaning clients can know total chain fees collected in real time, total fees in asset, fees by op among other things.
-
-As a poc we also added amount and asset_id of transfer operations to illustrate how easy is to index more data for any competent graphene developer.
+Optimal numbers for speed/performance can depend on hardware, default values are provided. 
 
 ## Hardware needed
 
 It is very recommended that you use SSD disks in your node if you are trying to synchronize bitshares blockchain. It will make the task a lot faster.
 
-You need 500 gigs of space to be safe for a while, 32 gigs or more of ram is recommended.
+You need 1000G of space to be safe for a while, 32G or more of RAM is recommended.
 
 After elasticsearch is installed increase heap size depending in your RAM: 
 
