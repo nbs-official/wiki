@@ -72,7 +72,7 @@ After elasticsearch is installed increase heap size depending in your RAM:
 
 You need to have bitshares-core and its dependencies installed(https://github.com/bitshares/bitshares-core#getting-started).
 
-In ubuntu 18.04 all the dependencies are installed by default. Just get the last version at:
+In ubuntu 18.04 all the dependencies for elasticsearch database are installed by default. Just get the last version(or desired version) at:
 
 https://www.elastic.co/downloads/elasticsearch
 
@@ -82,32 +82,30 @@ $ cd elasticsearch-7.4.0/
 $./bin/elasticsearch
 ```
 
-ES will listen in `127.0.0.1:9200` by default.
+ES will listen in `127.0.0.1:9200`. Try http://127.0.0.1:9200/ in your browser and you should see some info about the database if the service started correctly.
 
 You can put the binary as a service, program haves a `--daemonize` option, can run inside `screen` or any other option that suits you in order to keep the database running. 
 
-Please note ES does not run a the root user, if you are a root user you need to first make a normal user account by:
+Please note ES does not run as root, make a normal user account by and proceed after:
 
 `adduser elastic`
 
 ## Running
 
-Make sure ES is running, can start it by:
-
-`./elasticsearch --daemonize`
-
-ES will listen on localhost port 9200 `127.0.0.1:9200`
-
-Clone repo and install bitshares:
+Clone the bitshares repo and install bitshares:
 
 ```
 git clone https://github.com/bitshares/bitshares-core
 cd bitshares-core
+git checkout -t origin/develop
 git submodule update --init --recursive
-BOOST_ROOT=$HOME/opt/boost_1_63_0
-cmake -DBOOST_ROOT="$BOOST_ROOT" -DCMAKE_BUILD_TYPE=RelWithDebInfo .
+cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo .
 make
 ```
+
+Start node with elasticsearch plugins enabled with default options:
+
+`./programs/witness_node --plugins "elasticsearch es-objects"`
 
 ### Arguments
 
