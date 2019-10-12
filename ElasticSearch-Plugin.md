@@ -9,16 +9,14 @@ Store full account and object data into indexed elastisearch database.
 - [Installation](#installation)
 - [Running](#running)
   - [Arguments](#arguments)
-  - [Starting node](#starting-node)
-  - [Checking if it is working](#checking-if-it-is-working)
+  - [Examples](#starting-node)
+  - [Checking if is working](#checking-if-is-working)
   - [Indexes](#Indexes)
 - [Usage](#usage)
-  - [Get operations by account, time and operation type](#get-operations-by-account-time-and-operation-type)
-  - [Filter based on block number or block range](#filter-based-on-block-number-or-block-range)
-  - [Get operations by transaction hash](#get-operations-by-transaction-hash)
+  - [Kibana](#kibana)
+  - [Direct queries](#direct-queries)
+  - [Wrapper](#wrapper)
 - [Going forward](#going-forward)
-- [Note on Duplicates](#note-on-duplicates)
-- [Wrapper](#wrapper)
 
 ## Motivation
 
