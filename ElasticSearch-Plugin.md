@@ -5,13 +5,8 @@ Store full account and object data into indexed elastisearch database.
 - [Motivation](#motivation)
 - [Database Selection](#the-database-selection)
 - [Technical](#technical)
-  - [Replay and _bulk](#replay-and-_bulk)
-  - [Accessing data inside operations](#accessing-data-inside-operations)
 - [Hardware needed](#hardware-needed)
 - [Installation](#installation)
-  - [Install java](#install-java)
-  - [Install ES](#install-es)
-  - [Install curl](#install-curl)
 - [Running](#running)
   - [Arguments](#arguments)
   - [Starting node](#starting-node)
@@ -55,13 +50,13 @@ Optimal numbers for speed/performance can depend on hardware, default values are
 
 ## Hardware needed
 
-It is very recommended that you use SSD disks in your node if you are trying to synchronize bitshares blockchain. It will make the task a lot faster.
+It is very recommended that you use SSD disks in your node if you are trying to synchronize bitshares mainnet. It will make the task a lot faster. Still, the process of synchronizing the mainnet can take a few days.
 
-You need 1000G of space to be safe for a while, 32G or more of RAM is recommended.
+You need 1T of space to be safe for a while, 32G or more of RAM is recommended.
 
 After elasticsearch is installed increase heap size depending in your RAM: 
 
-`elastic@alfredo-worker2:~/elasticsearch-5.6.3/config$ vi jvm.options`        
+`$ vi config/jvm.options`        
 
 ```
 ..
@@ -75,75 +70,25 @@ After elasticsearch is installed increase heap size depending in your RAM:
 
 ## Installation
 
-Basically there are 2 things you need: elasticsearch and curl for c++. elasticsearch need java so those are the 3 things you will need to have. The following are instructions tested in debian(ubuntu - mint) based linux versions.
+You need to have bitshares-core and its dependencies installed(https://github.com/bitshares/bitshares-core#getting-started).
 
-### Install java:
+In ubuntu 18.04 all the dependencies are installed by default. Just get the last version at:
 
-download the jre, add sudo to the start of the commands if installing from a non root user:
-
-`apt-get install default-jre`
-
-we are going to need the jdk too:
-
-`apt-get install default-jdk`
-
-add repository to install oracle java8:
-
-in ubuntu:
-
-`add-apt-repository ppa:webupd8team/java` 
-
-in debian:
-
-`add-apt-repository "deb http://ppa.launchpad.net/webupd8team/java/ubuntu xenial main"`
-
-then:
-`apt-get update`
-
-if you don't have add-apt-repository command you can install it by: 
-
-`apt-get install software-properties-common`
-
-install java 8:
-
-`apt-get install oracle-java8-installer`
-
-### Install ES:
-
-Get version 6 file at: https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.2.0.zip
-
-**Note** Plugin works with currently last stable version of elastic(6.2.0)
-
-Please do this as a non root user as ES will not run as root.
-
-download as: 
-
-`wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.2.0.zip`
-
-unzip:
-
-`unzip elasticsearch-6.2.0.zip`
-
-and run:
+https://www.elastic.co/downloads/elasticsearch
 
 ```
-cd elasticsearch-6.2.0/
-./bin/elasticsearch
+$ tar xvzf elasticsearch-7.4.0-linux-x86_64.tar.gz
+$ cd elasticsearch-7.4.0/
+$./bin/elasticsearch
 ```
 
-You can put this as a service, the binary haves a `--daemonize` option, can run inside `screen` or any other option that suits you in order to keep the database running. 
+ES will listen in `127.0.0.1:9200` by default.
+
+You can put the binary as a service, program haves a `--daemonize` option, can run inside `screen` or any other option that suits you in order to keep the database running. 
 
 Please note ES does not run a the root user, if you are a root user you need to first make a normal user account by:
 
 `adduser elastic`
-
-After created: `su elastic`. Execute the `wget` and `unzip` commands from above as normal user in created user home dir. 
-
-### Install curl
-
-We need curl to send requests from the c++ plugin into the ES database:
-
-`apt-get install libcurl4-openssl-dev`
 
 ## Running
 
