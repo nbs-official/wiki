@@ -8,10 +8,8 @@ Store full account and object data into indexed elastisearch database.
 - [Hardware needed](#hardware-needed)
 - [Installation](#installation)
 - [Running](#running)
-  - [Arguments](#arguments)
-  - [Examples](#starting-node)
   - [Checking if is working](#checking-if-is-working)
-  - [Indexes](#Indexes)
+  - [Arguments](#arguments)
 - [Usage](#usage)
   - [Kibana](#kibana)
   - [Direct queries](#direct-queries)
@@ -24,6 +22,7 @@ There are 2 main problems this plug-in tries to solve:
 
 - The amount of RAM needed to run a full node with all the account history. Huge.
 - Fast search inside operation fields directly querying the ES database.
+- Fast each inside objects by any field.
 
 ## The database selection
 
@@ -40,7 +39,7 @@ Elastic search was selected for the main following reasons:
 
 The `elasticsearch` plugin when active is connected to each block the node receives. Operations are extracted in a similar logic of the classic `account_history_plugin` but sent to the ES database instead of storing internally. All fields from the operation are indexed for fast search.
 
-The `es-objects` plugin when active is connected to config specified objects types(limit order objects, asset objects, etc).
+The `es_objects` plugin when active is connected to config specified objects types(limit order objects, asset objects, etc).
 
 Both plugins work in a similar way, data is collected in plugin internal database until a good amount of them(configurable) is available, then is sent as a `_bulk` operation to ES. `_bulk` needs to be big when replaying but much more smaller when we are in sync to display real time data to end users.
 
@@ -101,37 +100,31 @@ cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo .
 make
 ```
 
-Start node with elasticsearch plugins enabled with default options:
+Start node with elasticsearch plugins enabled with default options. Make sure ES is running in localhost:9200
 
-`./programs/witness_node --plugins "elasticsearch es-objects"`
-
-### Arguments
-
-The ES plugin have the following parameters passed by command line:
-
-- `elasticsearch-node-url` - The url of elasticsearch - default: `http://localhost:9200/`
-- `elasticsearch-bulk-replay` - The number of lines(ops * 2) to send to database in replay state - default: `10000`
-- `elasticsearch-bulk-sync` - The number of lines(ops * 2) to send to database at syncronized state - default: `100` 
-- `elasticsearch-visitor` - Index visitor additional inside op data - default: `false`
-- `elasticsearch-basic-auth` - Send auth data i nthe form "username:password" - default: no auth ""
-- `elasticsearch-index-prefix` - A prefix for your indexes - default: "bitshares-"
-
-### Starting node
-
-ES plugin is not active by default, we need to start it with the `plugins` parameter. An example of starting a node with ES plugin on the simplest form with all the default options will be:
-
-`programs/witness_node/witness_node --plugins "witness elasticsearch"`
-
-**Note** `elasticsearch` plugin and `account_history` plugin can not run the 2 at the same time.
+`./programs/witness_node/witness_node --plugins "elasticsearch es_objects"`
 
 ### Checking if it is working
 
-A few minutes after the node start the first batch of 5000 ops will be inserted to the database. If you are in a desktop linux you may want to install https://github.com/mobz/elasticsearch-head (only works with elasticsearch 5) and see the database from the web browser to make sure if it is working. This is optional.
-
-If you only have command line available you can query the database directly throw curl as:
+By default you should see the following messages in the witness console while the node is loading:
 
 ```
-root@NC-PH-1346-07:~/bitshares/elastic/bitshares-core# curl -X GET 'http://localhost:9200/bitshares-*/data/_count?pretty=true' -H 'Content-Type: application/json' -d '
+...
+572387ms th_a       elasticsearch_plugin.cpp:516  plugin_startup       ] elasticsearch ACCOUNT HISTORY: plugin_startup() begin
+572387ms th_a       application.cpp:1235          startup_plugins      ] Plugin elasticsearch started
+572395ms th_a       es_objects.cpp:405            plugin_startup       ] elasticsearch OBJECTS: plugin_startup() begin
+572395ms th_a       application.cpp:1235          startup_plugins      ] Plugin es_objects started
+...
+575659ms th_a       es_objects.cpp:82             genesis              ] elasticsearch OBJECTS: inserting data from genesis
+595710ms th_a       application.cpp:603           handle_block         ] Got block: #10000 00002710c3894322c3a33dabdcb4020c2918db6e time: 2015-10-13T23:15:42 transaction(s): 0 latency: 126190453710 ms from: cyrano  irreversible: 9789 (-211)
+602395ms th_a       application.cpp:603           handle_block         ] Got block: #20000 00004e2032e9ec266a4eb088a5e0aa05bb24ff0c time: 2015-10-14T07:37:33 transaction(s): 0 latency: 126160349395 ms from: bitcube  irreversible: 19785 (-215)
+...
+```
+
+In a new window can check the total rows in the bitshares index you have, the count number should be increasing as we sync:
+
+```
+$ curl -X GET 'http://localhost:9200/bitshares-*/data/_count?pretty=true' -H 'Content-Type: application/json' -d '
 {
     "query" : {
         "bool" : { "must" : [{"match_all": {}}] }
@@ -139,101 +132,64 @@ root@NC-PH-1346-07:~/bitshares/elastic/bitshares-core# curl -X GET 'http://local
 }
 '
 {
-  "count" : 360000,
+  "count" : 35000,
   "_shards" : {
-    "total" : 5,
-    "successful" : 5,
+    "total" : 1,
+    "successful" : 1,
     "skipped" : 0,
     "failed" : 0
   }
 }
-root@NC-PH-1346-07:~/bitshares/elastic/bitshares-core# 
+$ 
 ```
 
-360000 records are inserted at this point of the replay in ES, means it is working.
+Replace `bitshares-*` to `objects-*` to make sure you have items also in the objects indexes.
 
-**Important: Replay with ES plugin will be always slower than the "save to ram" `account_history_plugin` so expect to wait a lot more to be in sync than usual. With the recommended hardware the synchronization can take 30 hours.**
+Note: If you see that you just have to wait to sync, you can execute this queries often to check progress, as long as the numbers are moving to the up side you are generally going fine.
 
-A synchronized node will look like this(screen capture 02/08/2018):
-
-```
-root@NC-PH-1346-07:~# curl -X GET 'http://localhost:9200/bitshares-*/data/_count?pretty=true' -H 'Content-Type: application/json' -d '
-{
-    "query" : {
-        "bool" : { "must" : [{"match_all": {}}] }
-    }
-}
-'
-{
-  "count" : 391390823,
-  "_shards" : {
-    "total" : 175,
-    "successful" : 175,
-    "skipped" : 0,
-    "failed" : 0
-  }
-}
-root@NC-PH-1346-07:~# 
-```
-**Important: We  have reports of the need of more than 250G of disk space at 2018-08-02 to save all the history and the logs for them. Please make sure you have enough disk before synchronizing.**
-
-## Indexes
-
-The plugin creates monthly indexes in the ES database, index names are as `graphene-2016-05` and contain all the operations made inside the monthly period.
-
-List your indexes as:
+You can also check your indexes with:
 
 ```
-NC-PH-1346-07:~# curl -X GET 'http://localhost:9200/_cat/indices' 
-yellow open bitshares-2018-02 voS1uchzSxqxqkiaKNrEYg 5 1  18984984 0  10.8gb  10.8gb
-yellow open bitshares-2018-06 D6wyX58lRyG3QOflmPwJZw 5 1  28514130 0  15.6gb  15.6gb
-yellow open bitshares-2017-10 73xRTA-fSTm479H4kOENuw 5 1   9326346 0   5.2gb   5.2gb
-yellow open bitshares-2016-08 -MMp3VGGRZqG2YL1LQunbg 5 1    551835 0 270.1mb 270.1mb
-yellow open bitshares-2016-07 Ao56gO9LQ-asMhX50rbcCg 5 1    609087 0 303.2mb 303.2mb
-yellow open bitshares-2018-05 9xuof-PiRQWburpW8ZXHVg 5 1  29665610 0  17.3gb  17.3gb
-yellow open bitshares-2017-01 SpfwEzGcSoy9Hd6c6fzv2g 5 1   1197124 0   659mb   659mb
-yellow open bitshares-2017-12 tF5af4OvTLqcx3IYUJSQig 5 1  13244366 0   7.5gb   7.5gb
-yellow open bitshares-2016-03 yy91IvyATOCEoFHjgDbalg 5 1    597461 0 297.4mb 297.4mb
-yellow open bitshares-2015-12 z-ZAZqHsQL2EDNpf3_ghGA 5 1    349985 0 151.3mb 151.3mb
-yellow open bitshares-2017-07 OOr_xW4STsCm3sev1xtTRQ 5 1  17890903 0   9.6gb   9.6gb
-yellow open bitshares-2016-04 jt9q50ADQuylV4l25zGAaw 5 1    413798 0 205.6mb 205.6mb
-yellow open bitshares-2016-11 mWz7DpjSQyqJ_rL8gtMqWw 5 1    495556 0   260mb   260mb
-yellow open bitshares-2016-12 2qht_wrXTUmNqDvczpHYzw 5 1    917034 0 506.6mb 506.6mb
-yellow open bitshares-2016-10 vAMb0kW6Stqz6CNbuu7PEQ 5 1    416570 0 208.8mb 208.8mb
-yellow open bitshares-2015-11 ETNFuF3sTPe-gTSzX3bdIg 5 1    301079 0 131.9mb 131.9mb
-yellow open bitshares-2017-08 73Q2Asw-Rf228oQLoSCLGw 5 1   9916248 0   5.6gb   5.6gb
-yellow open bitshares-2016-05 3c95AvKcQk2puBwVt_HIqQ 5 1    498493 0   246mb   246mb
-yellow open bitshares-2017-02 lsiiz7PmS2q9_P2BQpNkNQ 5 1   1104282 0 586.7mb 586.7mb
-yellow open bitshares-2017-11 4pqwIRdWSwSe5198YNz-Nw 5 1  14107174 0     8gb     8gb
-yellow open bitshares-2018-07 fdmfXLqSTESODyLI_7cjXg 5 1 133879948 0  51.3gb  51.3gb
-yellow open bitshares-2016-06 Is11IdcnT8mfBPpoLUjJyw 5 1    656358 0 330.3mb 330.3mb
-yellow open bitshares-2018-04 MEA8fCsgSbOVXa0Z05cfsA 5 1  20940461 0  11.9gb  11.9gb
-yellow open bitshares-2018-03 fMjxhFwHSP-6ewrl0Ns6ZQ 5 1  20335546 0    12gb    12gb
-yellow open bitshares-2017-09 o-b2Bf3LR0-J1kUiv4FpHA 5 1  11075939 0   6.3gb   6.3gb
-yellow open bitshares-2018-01 jw9rYlmTSvuLC1hHcYyU4Q 5 1  19396703 0  11.2gb  11.2gb
-yellow open bitshares-2018-08 EDRxQvxhQJe3Vam_FxZMWg 5 1   8038498 0     3gb     3gb
-yellow open bitshares-2016-09 fo2AL0y7T_q_HtXEYCv35Q 5 1    409164 0 203.4mb 203.4mb
-yellow open bitshares-2016-01 3sjjs-4oQMm5HG-vUTuyoA 5 1    372772 0 168.7mb 168.7mb
-yellow open bitshares-2017-03 ZxjWksRyTaGstm6T2Kxl9A 5 1   2167788 0   1.1gb   1.1gb
-yellow open bitshares-2016-02 toWbFwI-RB2wEGrR8873rQ 5 1    468174 0 222.7mb 222.7mb
-yellow open bitshares-2017-05 IEZQ-rtmQU2kKNcRb58Egg 5 1  10278394 0   5.6gb   5.6gb
-yellow open bitshares-2017-04 S1h2eBGiS3quNJU7CqPR7Q 5 1   3316120 0   1.8gb   1.8gb
-yellow open bitshares-2017-06 0HYkECRbSwGDrmDFof8nqA 5 1  10795239 0     6gb     6gb
-yellow open bitshares-2015-10 XyKOlrTWSK6vQgdXm8SAtQ 5 1    161004 0  84.5mb  84.5mb
-root@NC-PH-1346-07:~# 
+$ curl -X GET 'http://localhost:9200/_cat/indices'
+yellow open objects-bitasset  CyYgodyOS3OzPCC9ED6K_Q 1 1    33   0  73.4kb  73.4kb
+yellow open objects-balance   TCWc24MDSPG2PwxTGSLbNQ 1 1  1760   0 256.1kb 256.1kb
+yellow open objects-asset     4TkUeOdwRnSeDUtqOs3B2g 1 1   457   0 171.5kb 171.5kb
+yellow open objects-account   Tv-7TI_rTLSMqrDEj3FGYw 1 1 95405 652  75.5mb  75.5mb
+yellow open objects-proposal  J5ok-YqNQyqW5psAxVARqQ 1 1     6   6  38.1kb  38.1kb
+yellow open bitshares-2015-10 IBDfO9wqR5qtmY5_g4f81Q 1 1 35000   0  18.5mb  18.5mb
+$ 
 ```
 
-If you don't see any index here then something is wrong with the bitshares-core node setup with elasticsearch plugin. 
+### Arguments
 
-## Pre-define settings
+The ES plugin have the following parameters passed by command line or config file:
 
-By default data indexes will be created with default elasticsearch settings. Node owner can tweak the default settings for all the `bitshares-*` indexes before the addition of any data.
+- `elasticsearch-node-url` - Database url, default: http://localhost:9200/
+- `elasticsearch-bulk-replay` - Number of bulk documents to dump to the database on replay, default: 10000
+- `elasticsearch-bulk-sync` - Number of bulk documents to index on a  synchronized chain, default: 100
+- `elasticsearch-visitor` - Use visitor to index additional data - almost deprecated and off by default.
+- `elasticsearch-basic-auth` - Username and password for a protected database,  default: empty
+- `elasticsearch-index-prefix` - Prefix for the indexes (bitshares-)
+- `elasticsearch-operation-object` - Save operation as object. Very important feature to search inside operation fields, default: on
+- `elasticsearch-start-es-after-block` - Start doing ES job after block. An important maintenance option that will help if your node crash to restart the ES dumping only after the specifying block. By default this is 0 so all blocks will be saved but this is only to start from scratch.
+- `elasticsearch-operation-string` - Save operation as string. Needed to serve history api calls. This is turned off by defualt as default `elasticsearch-mode` is to only save. If enabled will allow bitshares-core api call `get_account_history` to use ES instead of internal storage limited database.
+- `elasticsearch-mode` - Mode of operation: only_save(0), only_query(1), all(2). Default: 0
 
-An example of a good index configuration is as follows:
+Options for the `es_objects` plugins are:
 
-```
-todo
-```
+- `es-objects-elasticsearch-url` - Database url, default: http://localhost:9200/
+- `es-objects-auth` - username:password, empty by default.
+- `es-objects-bulk-replay` - Bulk documents to send in replay, default: 10000
+- `es-objects-bulk-sync` - Bulk documents to send when in sync, default: 100
+- `es-objects-proposals` - Save proposal objects, on by default.
+- `es-objects-accounts` - Store account objects, on by default.
+- `es-objects-assets` - Store asset objects, on by default.
+- `es-objects-balances` - Store balances objects, on by default.
+- `es-objects-limit-orders` - Store limit order objects, off by default.
+- `es-objects-asset-bitasset` - Store feed data, on by default.
+- `es-objects-index-prefix` - Add a prefix to the index, default: objects-
+- `es-objects-keep-only-current` - Keep only current state of the objects, if enabled will save all the object changes as different database entries.
+- `es-objects-start-es-after-block` - Start doing ES job after block. Useful for synchronization after a crash.
 
 ## Usage
 
