@@ -14,7 +14,7 @@ Store full account and object data into indexed elastisearch database.
 
 ## Motivation
 
-There are 2 main problems this plug-in tries to solve:
+There are 3 main problems this plug-in tries to solve:
 
 - The amount of RAM needed to run a full node with all the account history. Huge.
 - Fast search inside operation fields directly querying the ES database.
