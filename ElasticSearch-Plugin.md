@@ -10,11 +10,7 @@ Store full account and object data into indexed elastisearch database.
 - [Running](#running)
   - [Checking if is working](#checking-if-is-working)
   - [Arguments](#arguments)
-- [Usage](#usage)
   - [Kibana](#kibana)
-  - [Direct queries](#direct-queries)
-  - [Wrapper](#wrapper)
-- [Going forward](#going-forward)
 
 ## Motivation
 
@@ -104,7 +100,7 @@ Start node with elasticsearch plugins enabled with default options. Make sure ES
 
 `./programs/witness_node/witness_node --plugins "elasticsearch es_objects"`
 
-### Checking if it is working
+### Checking if is working
 
 By default you should see the following messages in the witness console while the node is loading:
 
@@ -191,118 +187,14 @@ Options for the `es_objects` plugins are:
 - `es-objects-keep-only-current` - Keep only current state of the objects, if enabled will save all the object changes as different database entries.
 - `es-objects-start-es-after-block` - Start doing ES job after block. Useful for synchronization after a crash.
 
-## Usage
+## Kibana
 
-After your node is in sync you are in possession of a full node without the ram issues. A synchronized witness_node with ES will be using less than 10 gigs of ram:
+In order to run kibana you need to download the same version as the ES database. As i have the last stable version i can download from:
 
-```
- total          8604280K
-root@NC-PH-1346-07:~# pmap 2183
-```
+https://www.elastic.co/downloads/kibana
 
-What client side apps can do with this new data is kind of unlimited to client developer imagination but lets check some real world examples to see the benefits of this new feature.
+After extracted:
 
-### Get operations by account, time and operation type
+`./bin/kibana`
 
-References:
-https://github.com/bitshares/bitshares-core/issues/358
-https://github.com/bitshares/bitshares-core/issues/413
-https://github.com/bitshares/bitshares-core/pull/405
-https://github.com/bitshares/bitshares-core/pull/379
-https://github.com/bitshares/bitshares-core/pull/430
-https://github.com/bitshares/bitshares-ui/issues/68
-
-This is one of the issues that has been requested constantly. It can be easily queried with ES plugin by calling the _search endpoint doing:
-
-```
-curl -X GET 'http://localhost:9200/bitshares-*/data/_search?pretty=true' -H 'Content-Type: application/json' -d '
-{
-    "query" : {
-        "bool" : { "must" : [{"term": { "account_history.account.keyword": "1.2.282"}}, {"range": {"block_data.block_time": {"gte": "2015-10-26T00:00:00", "lte": "2015-10-29T23:59:59"}}}] }
-    }
-}
-'
-```
-**Note** Response is removed from the samples to save space in the document. If you are here you may want to see the response in your own place. 
-
-### Filter based on block number or block range
-
-https://github.com/bitshares/bitshares-core/issues/61
-
-```
-curl -X GET 'http://localhost:9200/bitshares-*/data/_search?pretty=true' -H 'Content-Type: application/json' -d '
-{
-    "query" : {
-        "bool" : { "must" : [{"term": { "account_history.account.keyword": "1.2.356589"}}, {"range": {"block_data.block_num": {"gte": "17824289", "lte": "17824290"}                                                                                                                  
-}}] }                                                          
-    }
-}
-'
-```
-
-### Get operations by transaction hash
-
-Refs: https://github.com/bitshares/bitshares-core/pull/373
-
-The `get_transaction_id` can be done as:
-
-```
-curl -X GET 'http://localhost:9200/bitshares-*/data/_search?pretty=true' -H 'Content-Type: application/json' -d '
-{
-    "query" : {
-        "bool" : { "must" : [{"term": { "block_data.block_num": 19421114}},{"term": { "operation_history.trx_in_block": 0}}] }
-    }
-}
-'
-```
-
-The above will return all ops inside trx, if you only need the trx_id field you can add `source` and just return the fields you need:
-
-```
-curl -X GET 'http://localhost:9200/bitshares-*/data/_search?pretty=true' -H 'Content-Type: application/json' -d '
-{
-    "_source": ["block_data.trx_id"],
-    "query" : {
-        "bool" : { "must" : [{"term": { "block_data.block_num": 19421114}},{"term": { "operation_history.trx_in_block": 0}}] }
-    }
-}
-'
-```
-
-The `get_transaction_from_id` is very easy:
-
-```
-curl -X GET 'http://localhost:9200/bitshares-*/data/_search?pretty=true' -H 'Content-Type: application/json' -d '
-{
-    "query" : {
-        "bool" : { "must" : [{"term": { "block_data.trx_id": "6f2d5064637391089127aa9feb36e2092347466c"}}] }
-    }
-}
-'
-```
-
-## Going forward
-
-The reader will need to learn more about elasticsearch and lucene query language in order to make more complex queries.
-
-All needed can be found at https://www.elastic.co/guide/en/elasticsearch/reference/6.2/index.html
-
-By the same team of elasticsearch there is a front end named `kibana` (https://www.elastic.co/products/kibana). It is very easy to install and can do pretty good stuff like getting very detailed stats of the blockchain network.
-
-### More visitor code = more indexed data = more filters to use
-
-Just as an example, it will be easy to index asset of trading operations by extending the visitor code of them. point 3 of https://github.com/bitshares/bitshares-core/issues/358 request trading pair, can be solved by indexing the asset of the trading ops as mentioned.
-
-Remember ES already have all the needed info in the `op` text field of the `operation_history` object. Client can get all the ops of an account, loop throw them and convert the `op` string into json being able to filter by the asset or any other field needed. There is no need to index everything but it is possible.
-
-## Note on Duplicates
-
-By using the `op_type` = `create` on each bulk line we send to the database and as we use an unique ID(ath id(2.9.X)) the plugin will not index any operation twice. If the node is on a replay, the plugin will start adding to database when it find a new record and never before. 
-
-## Wrapper
-
-It is not recommended to expose the elasticsearch api fully to the internet. Instead, applications will connect to a wrapper for data:
-
-https://github.com/oxarbitrage/bitshares-es-wrapper
-
-Elasticsearch database will listen in localhost and the wrapper in the same machine will expose the reduced set of API calls to the internet. 
+Kibana will listen by default in http://localhost:5601
