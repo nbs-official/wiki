@@ -275,13 +275,13 @@ Sign and broadcast the transaction.
 sign_builder_transaction 0 true
 ```
 
-Identify the proposal ID by reviewing the last transaction in the proposing account's history
+Identify the custom authority ID by reviewing the last transaction in the proposing account's history
 
 ```
 get_account_history alice 5
 ```
 
-The proposal ID will have an identifier such as 1.17.x.  The proposal can be reviewed with
+The custom authority ID will have an identifier such as 1.17.x.  The custom authority can be reviewed with
 
 ```
 get_object 1.17.x
