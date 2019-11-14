@@ -16,7 +16,7 @@ These test instructions should be executed from a command line interface wallet 
 
 - The core token may be different than "TEST" (e.g. "BTS").  Modify the commands to use your core token symbol.
 - The account names that are created might already exist in your test environment.  Check for their existence by running `get_account <ACCOUNT_NAME>`.  Modify the commands to use alternate account names).
-- The asset names that are created might already exist in your test environment.  Check for the existence by running `get_asset <ACCOUNT_NAME>`.  Modify the commands to use alternate account names).
+- The asset names that are created might already exist in your test environment.  Check for the existence by running `get_asset <ACCOUNT_NAME>`.  Modify the commands to use alternate asset names).
 
 
 ## Blockchain Initialization
