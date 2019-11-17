@@ -2,10 +2,9 @@
 
 This document is intended to assist with the testing of custom authorities (CA) per [BSIP 40 Specifications](https://github.com/bitshares/bsips/blob/master/bsip-0040.md) that is available starting in the [4.0.0 Consensus Release](https://github.com/bitshares/bitshares-core/milestone/17?closed=1).
 
-|[Testing](#testing-overview)|
-|-|
-|[Blockchain Initialization](#blockchain-initialization)|
-|[Authorized Transfers](#scenario-authorized-transfers)|
+- [Testing](#testing-overview)
+	- [Blockchain Initialization](#initialize-blockchain-for-custom-authorities)
+	- [Authorized Transfers](#scenario-authorized-transfers)
 
 Additional custom authorities instructions can be found at [Custom Authority Templates](https://github.com/bitshares/bitshares-core/wiki/Custom-Authority-Templates)
 
@@ -19,7 +18,7 @@ These test instructions should be executed from a command line interface wallet 
 - The asset names that are created might already exist in your test environment.  Check for the existence by running `get_asset <ACCOUNT_NAME>`.  Modify the commands to use alternate asset names).
 
 
-## Blockchain Initialization
+## Initialize blockchain for Custom Authorities
 
 The instructions in this section are for configuring a blockchain that has not yet been initialized for custom authorites.  These instructions will likely need to be tailored for your particular blockchain.  You may alternatively test these instructions on the BitShares public testnet.
 
@@ -75,7 +74,7 @@ approve_proposal "nathan" 1.10.x {"active_approvals_to_add":["nathan"]} true
 The settings will take effect when the proposal expires and will be reflected in the output of `get_global_properties`.
 
 
-# Scenario: Authorized Transfers
+# <div id="scenario-authorized-transfers"/> Scenario: Authorized Transfers
 
 This scenario involves one account (alice) authorizing another account (bob) to another funds from her account to any other account.
 
@@ -205,7 +204,7 @@ import_key alice 5KV...
 
 Alice authorizes Bob to transfer funds from her account to Charlie's account.  Authorizing this transaction will require building a transaction in the CLI Wallet.
 
-The custom_authority_create_operation has an identifier of 54.  In this example, Alice has an account identifier of 1.2.19, Bob has an account identifier of 1.2.20, and Charlie has an account identifier of 1.2.21.
+The `custom_authority_create_operation` has an identifier of 54.  In this example, Alice has an account identifier of 1.2.19, Bob has an account identifier of 1.2.20, and Charlie has an account identifier of 1.2.21.
 
 |Tip|
 |-|
@@ -275,7 +274,7 @@ Sign and broadcast the transaction.
 sign_builder_transaction 0 true
 ```
 
-Identify the custom authority ID by reviewing the last transaction in the proposing account's history
+Identify the custom authority ID by reviewing the last transaction in the authorizing account's history
 
 ```
 get_account_history alice 5
@@ -339,9 +338,9 @@ sign_builder_transaction2 0 ["TEST59nKbp4fb1aYxdxMkuALPkjMV4b4iDuWenivjwTjyE3pM3
 
 |Note|
 |-|
-|In order for an authorized party to use CA in the CLI wallet requires using the "builder transaction" and the specific command `sign_builder_transaction*2*` but not `sign_builder_transaction`.  `sign_builder_transaction2` requires an extra parameter where optional public keys may be specified for signing a transaction.  This should be used by the _authorized_ account (e.g. Bob) to include their authorized public key _which should have been previously imported into the wallet_ for the signing to be successful.|
+|In order for an authorized party to use CA in the CLI wallet requires using the "builder transaction" and the specific command `sign_builder_transaction2` but not `sign_builder_transaction`.  `sign_builder_transaction2` requires an extra parameter where optional public keys may be specified for signing a transaction.  This should be used by the _authorized_ account (e.g. Bob) to include their authorized public key _which should have been previously imported into the wallet_ for the signing to be successful.|
 
-The successful transfer can be confirmed by both checking Charlie's account history
+The successful transfer can be confirmed by checking Charlie's account history
 
 ```
 get_account charlie 5
