@@ -2,13 +2,20 @@
 
 This document is intended to assist with the use of custom authorities (CA) per [BSIP 40 Specifications](https://github.com/bitshares/bsips/blob/master/bsip-0040.md) in the [4.0.0 Consensus Release](https://github.com/bitshares/bitshares-core/milestone/17?closed=1).
 
-|[Custom Authority Templates](#custom-authority-json-templates)|
-|-|
-|[Authorized Restricted Transfers](#template-authorized-restricted-transfers)|
-|[Authorized Unrestricted Trading](#template-authorized-unrestricted-trading)|
-|[Authorized Feed Publishing by an Account](#template-authorized-feed-publishing-by-an-account)|
-|[Authorized Feed Publishing by a Key](#template-authorized-feed-publishing-by-a-key)|
-|[Authorized Account Registration](#template-authorized-account-registration)|
+- [Templates for Creating a Custom Authority](#custom-authority-json-templates)
+	- [Authorized Restricted Transfers](#template-authorized-restricted-transfers)
+	- [Authorized Unrestricted Trading](#template-authorized-unrestricted-trading)
+	- [Authorized Feed Publishing by an Account](#template-authorized-feed-publishing-by-an-account)
+	- [Authorized Feed Publishing by a Key](#template-authorized-feed-publishing-by-a-key)
+	- [Authorized Account Registration](#template-authorized-account-registration)
+- [Updating a Custom Authority](#updating-a-custom-authority)
+	- [Updating the Authorization Period](#updating-the-authorization-period)
+	- [Disabling a Custom Authority](#disabling-a-custom-authority)
+	- [Enabling a Custom Authority](#enabling-a-custom-authority)
+	- [Deleting a Custom Authority](#deleting-a-custom-authority)
+	- [Changing the Authorized Account](#changing-the-authorized-account)
+	- [Adding Restrictions to a Custom Authority](#adding-restrictions-to-a-custom-authority)
+	- [Removing a Restriction from a Custom Authority](#removing-a-restriction-from-a-custom-authority)
 
 # Custom Authority JSON Templates
 
@@ -25,6 +32,57 @@ sign_builder_transaction <builder_handle> true
 where the `<builder_handle>` is the integer "handle" output (e.g. 0, 1, 2, etc.) from the first command in the sequence `begin_builder_transaction`.  <JSON_template> is the JSON encoding of the `custom_authority_create_operation` (Operation 54) that can be broadcast to the network.
 
 Different authorizations require different templates.  This section contains the JSON-encoded templates for various authorizations.  Each of the templates have validity period from `valid_from` through `valid_to` that should be tailored for your use case **and** which must be compatible with the _existing_ limitations on custom authorites (`custom_authority_options`) that may be queried by invoking the `get_global_properties` command in the CLI Wallet or on an RPC-API node.
+
+Every custom authority has a unique identifier.  **This identifier can most easily be tracked immediately after the authorization is created by inspecting the authorizing account's history.**
+
+```
+get_account_history <account_name> 1
+```
+
+The custom authority ID will have an identifier such as 1.17.x.  The custom authority can be reviewed with
+
+```
+get_object 1.17.x
+```
+
+For example, 
+
+```json
+[{
+    "id": "1.17.0",
+    "account": "1.2.19",
+    "enabled": true,
+    "valid_from": "1970-01-01T00:00:00",
+    "valid_to": "2020-01-31T00:00:00",
+    "operation_type": 0,
+    "auth": {
+      "weight_threshold": 1,
+      "account_auths": [[
+          "1.2.20",
+          1
+        ]
+      ],
+      "key_auths": [],
+      "address_auths": []
+    },
+    "restrictions": [[
+        0,{
+          "member_index": 2,
+          "restriction_type": 0,
+          "argument": [
+            7,
+            "1.2.21"
+          ],
+          "extensions": []
+        }
+      ]
+    ],
+    "restriction_counter": 1
+  }
+]
+```
+
+The properties of these custom authority [can be updated after creation](#updating-a-custom-authority).
 
 
 ## Template: Authorized Restricted Transfers
@@ -71,4 +129,108 @@ A faucet account (1.2.16) authorizes a public key (BTS74YKubbAGUpihj1BP9cCNfdtUb
 
 ```json
 {"account":"1.2.16","enabled":true,"valid_from":"1970-01-01T00:00:00","valid_to":"2030-01-01T00:17:20","operation_type":5,"auth":{"weight_threshold":1,"account_auths":[],"key_auths":[["BTS74YKubbAGUpihj1BP9cCNfdtUbiAhathRs92Ai5EvEQegbpTm8",1]],"address_auths":[]},"restrictions":[]}
+```
+
+
+# Updating a Custom Authority
+
+## Updating the Authorization Period
+
+Grants of custom authorities are limited in duration by the authorizing account.  When a custom authority expires it is removed from an existence an can no longer be updated.  The time period of authorization can be updated while the authorization is still active.
+
+The `custom_authority_update_operation` has an identifier of 55.  In this example, the _original authorizing account_ (1.2.17) will build a transaction to update to change the time period (`valid_from` and `valid_to`) of the original custom authority (1.17.5) to be valid from July 1, 2020 through July 30, 2020.  Naturally this attempted change must be compatible with the _existing_ limitations on custom authorites (`custom_authority_options`) that may be queried by invoking the `get_global_properties` command in the CLI Wallet or on an RPC-API node.
+
+```
+begin_builder_transaction
+add_operation_to_builder_transaction <builder_handle> [55, {"account":"1.2.17","authority_to_update":"1.17.5","valid_from":"2020-07-01T00:00:00","valid_to":"2020-07-30T00:00:00"}]
+set_fees_on_builder_transaction <builder_handle> 1.3.0
+preview_builder_transaction <builder_handle>
+sign_builder_transaction <builder_handle> true
+```
+
+## Disabling a Custom Authority
+
+Grants of custom authorities may be disabled while the custom authority has not yet expired.
+
+The `custom_authority_update_operation` has an identifier of 55.  In this example, the _original authorizing account_ (1.2.17) will build a transaction to disable the original custom authority (1.17.5).
+
+```
+begin_builder_transaction
+add_operation_to_builder_transaction <builder_handle> [55, {"account":"1.2.17","authority_to_update":"1.17.5","new_enabled":"false"}]
+set_fees_on_builder_transaction <builder_handle> 1.3.0
+preview_builder_transaction <builder_handle>
+sign_builder_transaction <builder_handle> true
+```
+
+## Enabling a Custom Authority
+
+Grants of custom authorities may be enabled while the custom authority has not yet expired.
+
+The `custom_authority_update_operation` has an identifier of 55.  In this example, the _original authorizing account_ (1.2.17) will build a transaction to enable the original custom authority (1.17.5).
+
+```
+begin_builder_transaction
+add_operation_to_builder_transaction <builder_handle> [55, {"account":"1.2.17","authority_to_update":"1.17.5","new_enabled":"true"}]
+set_fees_on_builder_transaction <builder_handle> 1.3.0
+preview_builder_transaction <builder_handle>
+sign_builder_transaction <builder_handle> true
+```
+
+## Deleting a Custom Authority
+
+Grants of custom authorities may be permanently deleted while the custom authority has not yet expired.
+
+_The `custom_authority_delete_operation` has an identifier of 56_.  In this example, the _original authorizing account_ (1.2.17) will build a transaction to delete the original custom authority (1.17.5).
+
+```
+begin_builder_transaction
+add_operation_to_builder_transaction <builder_handle> [56, {"account":"1.2.17","authority_to_delete":"1.17.5"}]
+set_fees_on_builder_transaction <builder_handle> 1.3.0
+preview_builder_transaction <builder_handle>
+sign_builder_transaction <builder_handle> true
+```
+
+## Changing the Authorized Account
+
+Grants of custom authorities may be changed while the custom authority has not yet expired.
+
+The `custom_authority_update_operation` has an identifier of 55.  In this example, the _original authorizing account_ (1.2.17) will build a transaction to change the authorization (1.17.5) to another account (1.2.22).
+
+```
+begin_builder_transaction
+add_operation_to_builder_transaction <builder_handle> [55, {"account":"1.2.17","authority_to_update":"1.17.5","new_auth":"1.2.22"}]
+set_fees_on_builder_transaction <builder_handle> 1.3.0
+preview_builder_transaction <builder_handle>
+sign_builder_transaction <builder_handle> true
+```
+
+## Adding Restrictions to a Custom Authority
+
+Restrictions to an existing custom authority may be added while the custom authority has not yet expired.  The additional restriction is directly dependent on the custom authority's operation type.
+
+In this example, Alice (1.2.17) had _previously_ authorized Bob to [_create_ limit orders for her account without any restrictions](#template-authorized-unrestricted-trading).  Alice has decided to restrict the trading to only permit selling the core asset (1.3.0) to buy another asset (1.3.2).
+
+The `custom_authority_update_operation`, which has an identifier of 55, will be used to update the original custom authority (1.17.5).
+
+```
+begin_builder_transaction
+add_operation_to_builder_transaction <builder_handle> [55, {"account":"1.2.17","authority_to_update":"1.17.5","restrictions_to_add":[{"member_index":2,"restriction_type":10,"argument":[39,[{"member_index":1,"restriction_type":0,"argument":[8,"1.3.0"]}]]},{"member_index":3,"restriction_type":10,"argument":[39,[{"member_index":1,"restriction_type":0,"argument":[8,"1.3.2"]}]]}]} ]
+set_fees_on_builder_transaction <builder_handle> 1.3.0
+preview_builder_transaction <builder_handle>
+sign_builder_transaction <builder_handle> true
+```
+
+
+## Removing a Restriction from a Custom Authority
+
+Restrictions to an existing custom authority may be removed while the custom authority has not yet expired.  The restriction is identified by its 0-indexed position among the existing restrictions.
+
+The `custom_authority_update_operation` has an identifier of 55.  In this example, the _original authorizing account_ (1.2.17) will build a transaction to change the authorization (1.17.5) by removing the first restriction (0).
+
+```
+begin_builder_transaction
+add_operation_to_builder_transaction <builder_handle> [55, {"account":"1.2.17","authority_to_update":"1.17.5","restrictions_to_remove":[0]} ]
+set_fees_on_builder_transaction <builder_handle> 1.3.0
+preview_builder_transaction <builder_handle>
+sign_builder_transaction <builder_handle> true
 ```
