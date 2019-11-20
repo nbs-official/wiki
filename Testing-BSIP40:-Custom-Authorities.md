@@ -51,7 +51,7 @@ propose_parameter_change "nathan" "2020-01-14T00:00:00" {"extensions": {"custom_
 
 |Warning|
 |-|
-|This proposed parameter change will also override the other setting in the `extensions` corresponding to HTLC (`updatable_htlc_options`).  To preserve the blockchains current settings for HTLC, the proposed parameter change should also include the blockchain's existing setting.  For example, it could be expressed as:<p>`propose_parameter_change "nathan" "2020-01-14T00:00:00" {"extensions": {"custom_authority_options": {"max_custom_authority_lifetime_seconds": 3000000, "max_custom_authorities_per_account": 9, "max_custom_authorities_per_account_op": 4, "max_custom_authority_restrictions": 8}}, {"updatable_htlc_options": {"max_timeout_secs": 2419200, "max_preimage_size": 19200}} } true`|
+|This proposed parameter change will also override the other setting in the `extensions` corresponding to HTLC (`updatable_htlc_options`).  To preserve the blockchains current settings for HTLC, the proposed parameter change should also include the blockchain's existing setting.  For example, it could be expressed as:<p>`propose_parameter_change "nathan" "2020-01-14T00:00:00" {"extensions": {"custom_authority_options": {"max_custom_authority_lifetime_seconds": 3000000, "max_custom_authorities_per_account": 9, "max_custom_authorities_per_account_op": 4, "max_custom_authority_restrictions": 8}, "updatable_htlc_options": {"max_timeout_secs": 2419200, "max_preimage_size": 19200}} } true`|
 
 Identify the proposal ID by reviewing the last transaction in the proposing account's history
 
