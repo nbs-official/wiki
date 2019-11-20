@@ -198,7 +198,7 @@ The `custom_authority_update_operation` has an identifier of 55.  In this exampl
 
 ```
 begin_builder_transaction
-add_operation_to_builder_transaction <builder_handle> [55, {"account":"1.2.17","authority_to_update":"1.17.5","new_auth":"1.2.22"}]
+add_operation_to_builder_transaction <builder_handle> [55, {"account":"1.2.17","authority_to_update":"1.17.5","new_auth":{"weight_threshold":1,"account_auths":[["1.2.22",1]],"key_auths":[],"address_auths":[]}}]
 set_fees_on_builder_transaction <builder_handle> 1.3.0
 preview_builder_transaction <builder_handle>
 sign_builder_transaction <builder_handle> true
