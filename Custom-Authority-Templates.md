@@ -10,6 +10,7 @@ This document is intended to assist with the use of custom authorities (CA) per 
 	- [Authorized Feed Publishing by a Key](#template-authorized-feed-publishing-by-a-key)
 	- [Authorized Account Registration](#template-authorized-account-registration)
 	- [Authorized Voting by a Key](#template-authorized-voting-by-a-key)
+	- [Authorized Changing of a Witness Signing Key](#template-authorized-changing-of-a-witness-signing-key-by-a-key)
 - [Updating a Custom Authority](#updating-a-custom-authority)
 	- [Updating the Authorization Period](#updating-the-authorization-period)
 	- [Disabling a Custom Authority](#disabling-a-custom-authority)
@@ -163,6 +164,14 @@ Alice (1.2.19) authorizes a public key (BTS74YKubbAGUpihj1BP9cCNfdtUbiAhathRs92A
 
 ```json
 {"account":"1.2.16","enabled":true,"valid_from":"1970-01-01T00:00:00","valid_to":"2030-01-02T00:00:40","operation_type":6,"auth":{"weight_threshold":1,"account_auths":[],"key_auths":[["BTS74YKubbAGUpihj1BP9cCNfdtUbiAhathRs92Ai5EvEQegbpTm8",1]],"address_auths":[]},"restrictions":[{"member_index":2,"restriction_type":0,"argument":[0,{}]},{"member_index":3,"restriction_type":0,"argument":[0,{}]},{"member_index":5,"restriction_type":10,"argument":[39,[{"member_index":1,"restriction_type":0,"argument":[0,{}]}]]},{"member_index":5,"restriction_type":10,"argument":[39,[{"member_index":2,"restriction_type":0,"argument":[0,{}]}]]},{"member_index":4,"restriction_type":10,"argument":[39,[{"member_index":0,"restriction_type":0,"argument":[5,"BTS7zsqi7QUAjTAdyynd6DVe8uv4K8gCTRHnAoMN9w9CA1xLCTDVv"]}]]}]}
+```
+
+## Template: Authorized Changing of a Witness Signing Key by a Key
+
+A witness account (1.2.16) authorizes a public key (BTS74YKubbAGUpihj1BP9cCNfdtUbiAhathRs92Ai5EvEQegbpTm8) to update its signing key.  This requires authorizing the `witness_update_operation` with one restriction that prohibits updating the witness URL.  `witness_update_operation` is Operation 21.
+
+```json
+{"account":"1.2.16","enabled":true,"valid_from":"1970-01-01T00:00:00","valid_to":"2030-01-02T00:00:50","operation_type":21,"auth":{"weight_threshold":1,"account_auths":[],"key_auths":[["BTS74YKubbAGUpihj1BP9cCNfdtUbiAhathRs92Ai5EvEQegbpTm8",1]],"address_auths":[]},"restrictions":[{"member_index":3,"restriction_type":0,"argument":[0,{}]}]}
 ```
 
 # Updating a Custom Authority
