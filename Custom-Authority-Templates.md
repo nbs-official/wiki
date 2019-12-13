@@ -112,20 +112,12 @@ Alice (1.2.17) authorizes Bob (1.2.18) to _cancel_ limit orders for her account 
 
 ## Template: Authorized Restricted Trading
 
-Alice (1.2.17) authorizes a public key (BTS74YKubbAGUpihj1BP9cCNfdtUbiAhathRs92Ai5EvEQegbpTm8) to _create_ limit orders for her account but is restricted to trading ACOIN1 (1.3.2) against BCOIN1 (1.3.4), BCOIN2 (1.3.5), or BCOIN3 (1.3.6).  `limit_order_create_operation` is Operation 1.
+Alice (1.2.17) authorizes a public key (BTS74YKubbAGUpihj1BP9cCNfdtUbiAhathRs92Ai5EvEQegbpTm8) to _create_ limit orders for her account but is restricted to trading ACOIN1 (1.3.2) against BCOIN1 (1.3.4), BCOIN2 (1.3.5), or BCOIN3 (1.3.6).
 
-In principle, these operations could be combined into a single custom authority.  However the combination of these example restrictions would result in a total of 19 technical restrictions.  This quantity of technical restrictions may violates the upper limit to the number of restrictions within a single custom authority.  (The _existing_ limitations on custom authorites (`custom_authority_options`) that may be queried by invoking the `get_global_properties` command in the CLI Wallet or on an RPC-API node.)  The default value that may be set equals 10.
-
-Therefore this particular restriction may be separated into two separate custom authorities.  The first custom authority will permit selling ACOIN1 for BCOIN1, BCOIN2, or BCOIN3.  (This results in 9 technical restrictions for this custom authority.)
+These operations are combined into a single custom authority by using a "logical or" branch.  The first branch authorizes the selling of ACOIN1 for ACOIN1 for BCOIN1, BCOIN2, or BCOIN3.  The second branch authorizes selling of BCOIN1, BCOIN2, or BCOIN3 for ACOIN1.  `limit_order_create_operation` is Operation 1.
 
 ```json
-{"account":"1.2.17","enabled":true,"valid_from":"1970-01-01T00:00:00","valid_to":"2030-01-01T00:17:25","operation_type":1,"auth":{"weight_threshold":1,"account_auths":[],"key_auths":[["BTS74YKubbAGUpihj1BP9cCNfdtUbiAhathRs92Ai5EvEQegbpTm8",1]],"address_auths":[]},"restrictions":[{"member_index":2,"restriction_type":10,"argument":[39,[{"member_index":1,"restriction_type":0,"argument":[8,"1.3.2"]}]]},{"member_index":999,"restriction_type":11,"argument":[40,[[{"member_index":3,"restriction_type":10,"argument":[39,[{"member_index":1,"restriction_type":0,"argument":[8,"1.3.4"]}]]}],[{"member_index":3,"restriction_type":10,"argument":[39,[{"member_index":1,"restriction_type":0,"argument":[8,"1.3.5"]}]]}],[{"member_index":3,"restriction_type":10,"argument":[39,[{"member_index":1,"restriction_type":0,"argument":[8,"1.3.6"]}]]}]]]}]}
-```
-
-The second custom authority will permit selling BCOIN1, BCOIN2, or BCOIN3 for ACOIN1.  (This results in 9 technical restrictions for this custom authority.)
-
-```json
-{"account":"1.2.17","enabled":true,"valid_from":"1970-01-01T00:00:00","valid_to":"2030-01-01T00:17:25","operation_type":1,"auth":{"weight_threshold":1,"account_auths":[],"key_auths":[["BTS74YKubbAGUpihj1BP9cCNfdtUbiAhathRs92Ai5EvEQegbpTm8",1]],"address_auths":[]},"restrictions":[{"member_index":999,"restriction_type":11,"argument":[40,[[{"member_index":2,"restriction_type":10,"argument":[39,[{"member_index":1,"restriction_type":0,"argument":[8,"1.3.4"]}]]}],[{"member_index":2,"restriction_type":10,"argument":[39,[{"member_index":1,"restriction_type":0,"argument":[8,"1.3.5"]}]]}],[{"member_index":2,"restriction_type":10,"argument":[39,[{"member_index":1,"restriction_type":0,"argument":[8,"1.3.5"]}]]}]]]},{"member_index":3,"restriction_type":10,"argument":[39,[{"member_index":1,"restriction_type":0,"argument":[8,"1.3.2"]}]]}]}
+{"account":"1.2.17","enabled":true,"valid_from":"1970-01-01T00:00:00","valid_to":"2030-01-01T00:17:25","operation_type":1,"auth":{"weight_threshold":1,"account_auths":[],"key_auths":[["BTS74YKubbAGUpihj1BP9cCNfdtUbiAhathRs92Ai5EvEQegbpTm8",1]],"address_auths":[]},"restrictions":[{"member_index":999,"restriction_type":11,"argument":[40,[[{"member_index":2,"restriction_type":10,"argument":[39,[{"member_index":1,"restriction_type":6,"argument":[27,["1.3.2"]]}]]},{"member_index":3,"restriction_type":10,"argument":[39,[{"member_index":1,"restriction_type":6,"argument":[27,["1.3.3","1.3.4","1.3.5"]]}]]}],[{"member_index":2,"restriction_type":10,"argument":[39,[{"member_index":1,"restriction_type":6,"argument":[27,["1.3.3","1.3.4","1.3.5"]]}]]},{"member_index":3,"restriction_type":10,"argument":[39,[{"member_index":1,"restriction_type":6,"argument":[27,["1.3.2"]]}]]}]]]}]}
 ```
 
 _It is not possible to restrict the cancellation of orders as a function of the the assets that are involved.  Therefore the authorization to cancel limit orders will be unrestricted.  `limit_order_cancel_operation` is Operation 2.
