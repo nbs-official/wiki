@@ -78,7 +78,7 @@ For a release,
     testnet hardfork date.
 12. Update online code documentation by using updated `Doxyfile` as config file in the `master` branch. Send pull request to https://github.com/bitshares/doxygen.bitshares.org with new content in html format. Send pull to https://github.com/bitshares/dev.bitshares.works with new content in xml format.
 13. Update date of last core [download page of bitshares.org site](https://github.com/bitshares/bitshares.org/blob/master/download.php).
-14. Create binaries for linux, macos and windows. Once the tag name is known create binaries for this 3 OS. Attach them to release notes. 
+14. Create binaries for linux, macos and windows with [bitshares-gitian](https://github.com/bitshares/bitshares-gitian). Once the tag name is known create binaries for this 3 OS. Attach them to release notes. 
 Example: https://github.com/bitshares/bitshares-core/releases/tag/3.0.0
 Binaries names for this release: 
 - Linux: BitShares-core-3.0.0-Linux-cli-tools.tar.gz
