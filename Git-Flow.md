@@ -57,6 +57,7 @@ For a release,
    2. FC version usually has been bumped already during development, but it
    doesn't harm if check again.
    3. Bump docs sub-module which links to wiki.
+   4. Update CONTRIBUTORS.txt according to instructions inside.
 1. A "release" branch is created based on "develop" or "hardfork".
 2. Update Doxyfile with the last version tag in "release" branch.
 3. The "release" branch is merged into "testnet".
