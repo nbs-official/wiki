@@ -259,3 +259,33 @@ unlocked >>> get_delegate my-account
 ```
 and then run `get_global_properties` after the maintenance period and you should
 see the new delegate `1.5.10` listed in the `active_delegates` list.
+
+
+### <div id="tips-for-creating-keys" /> Creating New Keys
+
+Registering a new account requires the provision of at least two public keys to the registrar: one for the owner key and another for the active key.  Some registrars require a third public key for the memo.
+
+Pseudo-random keys for an account can be created by using the CLI Wallet command `suggest_brain_key`.
+
+
+```
+locked >>> suggest_brain_key 
+{
+  "brain_priv_key": "XXXXXX ...... ...... ...... ...... ...... ...... ...... ...... ...... ...... ...... ...... ...... ...... ......",
+  "wif_priv_key": "5......",
+  "pub_key": "TEST......"
+}
+```
+
+The public key is provided to a registrar during account registration.  The WIF private key should be securely archived.
+
+After account registration, a key can be imported into a CLI wallet with the command `import_key`.
+
+```
+locked >>> gethelp import_key
+
+usage: import_key ACCOUNT_NAME_OR_ID  WIF_PRIVATE_KEY
+
+example: import_key "1.3.11" 5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3
+example: import_key "usera" 5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3
+```
