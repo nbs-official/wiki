@@ -289,3 +289,45 @@ usage: import_key ACCOUNT_NAME_OR_ID  WIF_PRIVATE_KEY
 example: import_key "1.3.11" 5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3
 example: import_key "usera" 5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3
 ```
+
+### Claiming Accumulated Fees
+
+The accumulated fees for the asset owner can be claimed with the following steps.
+
+Two identifiers will be needed to claim the vesting balance.
+
+- The identifier of the account (1.2.x)
+- The identifier of the asset (1.3.y)
+- The amount to be claimed in satoshis (N)
+
+The identifier of the account can be found by inspecting the `id` ("1.3.x") in the output of `get_account`
+
+```
+get_account <ACCOUNT_NAME>
+```
+
+The identifier of the asset can be found by inspecting the `id` in the output of `get_asset` ("1.2.y").
+
+```
+get_asset <ACCOUNT_NAME>
+```
+
+Withdraw the vesting balance with the asset_claim_fees_operation which has an operation identifier of 43.  This will require building a transaction in the CLI Wallet.
+
+```
+begin_builder_transaction
+add_operation_to_builder_transaction 0 [43, {"issuer":"1.2.x", "amount_to_claim":{"amount":N, "asset_id":"1.3.y"}}]
+set_fees_on_builder_transaction 0 1.3.0
+```
+
+Optionally preview the transaction before signing.
+
+```
+preview_builder_transaction 0
+```
+
+Sign and broadcast the transaction.
+
+```
+sign_builder_transaction 0 true
+```
