@@ -261,7 +261,7 @@ and then run `get_global_properties` after the maintenance period and you should
 see the new delegate `1.5.10` listed in the `active_delegates` list.
 
 
-### <div id="tips-for-creating-keys" /> Creating New Keys
+### Creating New Keys
 
 Registering a new account requires the provision of at least two public keys to the registrar: one for the owner key and another for the active key.  Some registrars require a third public key for the memo.
 
