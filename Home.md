@@ -21,9 +21,9 @@ cmake -DBOOST_ROOT=~/boost160 .
 
 * [[Guide to setup personal nodes|https://hive.blog/bitshares/@ihashfury/run-your-own-decentralised-exchange]]
 * [[Guide to setup public API nodes|https://hive.blog/bitshares/@ihashfury/distributed-access-to-the-bitshares-decentralised-exchange]]
+* [[Load-balancing with HaProxy|HaProxy and BitShares]]
 * [[Manage your nodes by using gnu screen]]
 * [[Memory Reduction for Nodes]]
-* [[HaProxy and BitShares]]
 * [[ElasticSearch Plugin]]
 * [[Delayed Node]]
 * [[Debug Node|README-debug_node]]
