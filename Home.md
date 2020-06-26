@@ -60,6 +60,7 @@ cmake -DBOOST_ROOT=~/boost160 .
 
 ### Exchanges
 * [[Monitoring Accounts]]
+* [[BitShares Integration Guide (Single Node Edition)|https://dev.bitshares.works/en/master/bts_guide/tutorials/exchange_single_node.html]]
 
 ### Witnesses
 * [[How to become an active witness in BitShares 2.0]]
