@@ -56,7 +56,7 @@ Then set up `data/debug_datadir/api-access.json` to allow access to the debug AP
        ]
     }
 
-See [here](https://github.com/cryptonomex/graphene#accessing-restricted-apis) for more detail on the `api-access.json` format.
+See [here](https://github.com/bitshares/bitshares-core#accessing-restrictable-node-apis) for more detail on the `api-access.json` format.
 
 Once that is set up, run `debug_node` against your newly prepared datadir:
 
