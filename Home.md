@@ -58,7 +58,7 @@ cmake -DBOOST_ROOT=~/boost160 .
 * [[BitShares Coding Style / Guide|Style-Guide]]
 * [[Testing]]
 
-### Exchanges
+### Integration (exchanges and other businesses)
 * [[Monitoring Accounts]]
 * [[BitShares Integration Guide (Single Node Edition)|https://dev.bitshares.works/en/master/bts_guide/tutorials/exchange_single_node.html]]
 
