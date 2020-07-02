@@ -45,21 +45,20 @@ for these additional needs:
 4. Both "develop" and "hardfork" should always remain compatible with mainnet,
    i. e. a full replay must be possible.
 
-## How To Create a Release
 
+## How To Create a Release
 
 For a release,
 
-0. Bump stuff
+0. Check and bump stuff
    1. Check whether need to bump `DB_VERSION` to force a replay after upgraded:
    if there is a data schema change, or logic change that affects historical
    data, the answer is yes.
    2. FC version usually has been bumped already during development, but it
    doesn't harm if check again.
-   3. Bump docs sub-module which links to wiki.
-   4. Update CONTRIBUTORS.txt according to instructions inside.
 1. A "release" branch is created based on "develop" or "hardfork".
-2. Update Doxyfile with the last version tag in "release" branch.
+2. A draft of release notes is prepared as a Github issue, with links to issues and
+   pull requests, and info that users might have interest in.
 3. The "release" branch is merged into "testnet".
 4. For a hardfork release, the hardfork date is adapted directly on the
    testnet branch.
@@ -68,32 +67,64 @@ For a release,
    "testnet". Additional test-<i>version</i>s are tagged as needed.
 7. After sufficient testing, the release must be approved. In the case of a
    hardfork release, witness approval is required.
-8. After approval, the mainnet hardfork date is decided and set in the "release"
-   branch.
-9. The "release" branch is merged into "master", and a *version* tag is created
-   on "master". Create tag by git command line and then point the release to the created tag in github. This is needed for Docker to catch the new code.
-10. The "release" branch is merged back into "develop" and "hardfork".
-11. The "release" branch is merged into "testnet". This will produce a merge
+8. After approval, a *version* will be decided. If it is a hardfork release,
+   the mainnet hardfork date is decided and set in the "release" branch.
+9. Bump docs sub-module which links to wiki.
+10. Update Doxyfile with the planned version in the "release" branch.
+11. Update CONTRIBUTORS.txt in the "release" branch according to instructions
+    inside.
+12. The "release" branch is merged into "master", and a *version* tag is created
+    on "master". Create the tag by git command line and push to github.
+    This is needed for Docker to catch the new tag.
+    * Note: normally, a docker build will be triggered in docker cloud after the
+      tag is pushed.
+      If it did not trigger, it's said that it can be re-triggered by recreating
+      the tag on github.
+      Alternatively, remove the regex matched tag in docker cloud, add the
+      explicit tag name, manually trigger the build, then remove the explicit
+      tag name and re-add the regex matched tag.
+13. Create binaries for Linux, macOS and Windows with
+    [bitshares-gitian](https://github.com/bitshares/bitshares-gitian).
+14. Create the release on Github by attaching the prepared release notes to the
+    tag, attach the binaries and add checksums of the binaries in the release
+    notes.
+15. Update online code documentation by using updated `Doxyfile` as config file
+    in the `master` branch.
+    Send pull request to https://github.com/bitshares/doxygen.bitshares.org with
+    new content in html format.
+    Send pull request to https://github.com/bitshares/dev.bitshares.works with
+    new content in xml format.
+  * Note: the HTML files are hosted on Github Pages, thus the `CNAME` file in
+    the target directory need to be kept.
+16. Update date of last core [download page of bitshares.org site](
+    https://github.com/bitshares/bitshares.org/blob/master/download.php).
+17. The "release" branch is merged back into "develop" and "hardfork".
+18. The "release" branch is merged into "testnet". This will produce a merge
     conflict for the hardfork dates, which must be resolved without changing the
     testnet hardfork date.
-12. Update online code documentation by using updated `Doxyfile` as config file in the `master` branch. Send pull request to https://github.com/bitshares/doxygen.bitshares.org with new content in html format. Send pull to https://github.com/bitshares/dev.bitshares.works with new content in xml format.
-13. Update date of last core [download page of bitshares.org site](https://github.com/bitshares/bitshares.org/blob/master/download.php).
-14. Create binaries for linux, macos and windows with [bitshares-gitian](https://github.com/bitshares/bitshares-gitian). Once the tag name is known create binaries for this 3 OS. Attach them to release notes. 
-Example: https://github.com/bitshares/bitshares-core/releases/tag/3.0.0
-Binaries names for this release: 
-- Linux: BitShares-core-3.0.0-Linux-cli-tools.tar.gz
-- Windows: BitShares-Core-3.0.0-Windows-x64-cli-tools.zip
-- macOS: BitShares-Core-3.0.0-macOS-cli-tools.tar.gz
 
-**Note:** Solving conflicts by github(web) will merge branches in unintended directions. Avoid solving this way, merge and resolve conflicts manually through the git command line. Conflicts generally occur when merging release to testnet.
+**Note:** Solving conflicts by github(web) will merge branches in unintended
+directions. Avoid solving this way, merge and resolve conflicts manually through
+the git command line. Conflicts generally occur when merging release to testnet.
 
-**Note 2:** Follow command line github suggestion to resolve conflicts but at the end of the process you will not have permission to merge directly to `testnet`, never push the fix to `release`. Create a new branch and push there, then create a new pull request between `testnet` and `new_branch`, merge `new_branch` to `testnet` and `release` will be automatically added to the merge.
+**Note 2:** Follow command line github suggestion to resolve conflicts but at the
+end of the process you will not have permission to merge directly to `testnet`,
+never push the fix to `release`. Create a new branch and push there, then create
+a new pull request between `testnet` and `new_branch`, merge `new_branch` to
+`testnet` and `release` will be automatically added to the merge.
 
-**Note 3:** When creating tag for testnet do it from the command line with `git tag`. Github don't have the option to create a tag without a release.
+**Note 3:** When creating tag for testnet do it from the command line with
+`git tag`. Github don't have the option to create a tag without a release.
 
-**Note 4:** <strike>the tag commit can be changed</strike>. Don't change tags on github. This is a source of confusion, and of irreproducible bug reports. Make new one is better (ex: test-3.0.1).
+**Note 4:** <strike>the tag commit can be changed</strike>.
+Don't change tags on github. This is a source of confusion, and of
+irreproducible bug reports. Make new one is better (ex: test-3.0.1).
 
-**Note 5:** Do not mark releases as "pre release" unless there is a real new version coming immediately after. Never upgrade "pre release" to "release" as new emails to subscribers will not be sent when doing so.
+**Note 5:** Do not mark releases as "pre release" unless there is a real new
+version coming immediately after.
+Never upgrade "pre release" to "release" as new emails to subscribers will not
+be sent when doing so.
+
 
 ## How To Create an Emergency Fix
 
@@ -125,4 +156,5 @@ In general we want changes in the README to be visible fast in `master`.
 1. Update the README.md of the `release` candidate.
 2. Merge `release` to `master`.
 3. Merge back `release` to `develop`.
-4. Merge `develop` into `hardfork` and `testnet` if changes need to be visible in all the branches or wait until this merges occur naturally.
+4. Merge `develop` into `hardfork` and `testnet` if changes need to be visible
+   in all the branches or wait until this merges occur naturally.
