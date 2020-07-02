@@ -76,13 +76,13 @@ For a release,
 12. The "release" branch is merged into "master", and a *version* tag is created
     on "master". Create the tag by git command line and push to github.
     This is needed for Docker to catch the new tag.
-    * Note: normally, a docker build will be triggered in docker cloud after the
-      tag is pushed.
-      If it did not trigger, it's said that it can be re-triggered by recreating
-      the tag on github.
-      Alternatively, remove the regex matched tag in docker cloud, add the
-      explicit tag name, manually trigger the build, then remove the explicit
-      tag name and re-add the regex matched tag.
+  * Note: normally, a docker build will be triggered in docker cloud after the
+    tag is pushed.
+    If it did not trigger, it's said that it can be re-triggered by recreating
+    the tag on github.
+    Alternatively, remove the regex matched tag in docker cloud, add the
+    explicit tag name, manually trigger the build, then remove the explicit
+    tag name and re-add the regex matched tag.
 13. Create binaries for Linux, macOS and Windows with
     [bitshares-gitian](https://github.com/bitshares/bitshares-gitian).
 14. Create the release on Github by attaching the prepared release notes to the
