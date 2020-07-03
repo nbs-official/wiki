@@ -79,7 +79,7 @@ For a release,
   * Note: normally, a docker build will be triggered automatically in docker
     cloud after the tag is pushed. If it did not trigger, add the *explicit* tag
     name (but not a *regex* tag name) in docker cloud and manually trigger the
-    build.
+    build. The new tag name can be removed after the build is finished.
 13. Create binaries for Linux, macOS and Windows with
     [bitshares-gitian](https://github.com/bitshares/bitshares-gitian).
 14. Create the release on Github by attaching the prepared release notes to the
