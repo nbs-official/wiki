@@ -57,8 +57,8 @@ For a release,
    2. FC version usually has been bumped already during development, but it
    doesn't harm if check again.
 1. A "release" branch is created based on "develop" or "hardfork".
-2. A draft of release notes is prepared as a Github issue, with links to issues and
-   pull requests, and info that users might have interest in.
+2. A draft of release notes is prepared as a Github issue, with links to issues
+   and pull requests, and info that users might have interest in.
 3. The "release" branch is merged into "testnet".
 4. For a hardfork release, the hardfork date is adapted directly on the
    testnet branch.
@@ -76,13 +76,10 @@ For a release,
 12. The "release" branch is merged into "master", and a *version* tag is created
     on "master". Create the tag by git command line and push to github.
     This is needed for Docker to catch the new tag.
-  * Note: normally, a docker build will be triggered in docker cloud after the
-    tag is pushed.
-    If it did not trigger, it's said that it can be re-triggered by recreating
-    the tag on github.
-    Alternatively, remove the regex matched tag in docker cloud, add the
-    explicit tag name, manually trigger the build, then remove the explicit
-    tag name and re-add the regex matched tag.
+  * Note: normally, a docker build will be triggered automatically in docker
+    cloud after the tag is pushed. If it did not trigger, add the *explicit* tag
+    name (but not a *regex* tag name) in docker cloud and manually trigger the
+    build.
 13. Create binaries for Linux, macOS and Windows with
     [bitshares-gitian](https://github.com/bitshares/bitshares-gitian).
 14. Create the release on Github by attaching the prepared release notes to the
