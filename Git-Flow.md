@@ -82,6 +82,14 @@ For a release,
     build. The new tag name can be removed after the build is finished.
 13. Create binaries for Linux, macOS and Windows with
     [bitshares-gitian](https://github.com/bitshares/bitshares-gitian).
+  * Note: as of writing, bitshares-gitian doesn't automatically package the
+    latest license or the latest contributor list, which is described in
+    [bitshares-gitian issue #41](
+    https://github.com/bitshares/bitshares-gitian/issues/41).
+    Ideally the issue should be fixed.
+    Less ideally we could commit the new license to the master branch of
+    bitshares-gitian before building (the contributors file is not packaged
+    now, so can be ignored).
 14. Create the release on Github by attaching the prepared release notes to the
     tag, attach the binaries and add checksums of the binaries in the release
     notes.
