@@ -49,9 +49,14 @@ You can check which version(s) of boost you have by asking brew:
    ```
    brew search boost
    ```
-To install another version of Boost (such as 1.60):
+It is likely that we don't yet support the default boost version in brew.
+In the past we were able to install another version of Boost (such as 1.60):
    ```
    brew install boost@1.60
+   ```
+However, brew disabled versioned boost formulae in September 2020, so we need to build boost from source:
+   ```
+   brew install bitshares/boost160/boost@1.60
    ```
 
 OpenSSL:
