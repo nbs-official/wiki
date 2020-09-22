@@ -95,12 +95,13 @@ For a release,
     notes.
 15. Update online code documentation by using updated `Doxyfile` as config file
     in the `master` branch.
-    Send pull request to https://github.com/bitshares/doxygen.bitshares.org with
+  * Send pull request to https://github.com/bitshares/doxygen.bitshares.org with
     new content in html format.
-    Send pull request to https://github.com/bitshares/dev.bitshares.works with
+    Note: a) The HTML files are hosted on Github Pages, thus the `CNAME` file in
+    the target directory need to be kept. b) Need to edit `index.html`, remove
+    the "Build Status" CI badges.
+  * Send pull request to https://github.com/bitshares/dev.bitshares.works with
     new content in xml format.
-  * Note: the HTML files are hosted on Github Pages, thus the `CNAME` file in
-    the target directory need to be kept.
 16. Update date of last core [download page of bitshares.org site](
     https://github.com/bitshares/bitshares.org/blob/master/download.php).
 17. The "release" branch is merged back into "develop" and "hardfork".
