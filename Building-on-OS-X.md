@@ -54,9 +54,9 @@ In the past we were able to install another version of Boost (such as 1.60):
    ```
    brew install boost@1.60
    ```
-However, brew disabled versioned boost formulae in September 2020, so we need to build boost from source:
+However, brew disabled versioned boost formulae in September 2020, in addition boost 1.60 no longer compiles with latest brew, so we need to build a newer boost from source:
    ```
-   brew install bitshares/boost160/boost@1.60
+   brew install bitshares/boost/boost@1.69
    ```
 
 OpenSSL:
