@@ -1,8 +1,8 @@
-BitShares OS X Build Instructions
-===============================
+BitShares-Core Build Instructions for macOS
+===========================================
 
 1. Install XCode and its command line tools by following the instructions here: https://guide.macports.org/#installing.xcode. 
-   In OS X 10.11 (El Capitan) and newer, you will be prompted to install developer tools when running a devloper command in the terminal. This step may not be needed.
+   In OS X 10.11 (El Capitan) and newer, you will be prompted to install developer tools when running a developer command in the terminal. This step may not be needed.
 
 2. Install Homebrew by following the instructions here: http://brew.sh/
 
@@ -19,7 +19,7 @@ BitShares OS X Build Instructions
    ```
 
    Note:
-   As mentioned elsewhere, Bitshares depends on the third-party libraries "Boost" and "OpenSSL". These libraries need to be in certain version ranges. At the moment, Boost needs to be between 1.58 and 1.69. OpenSSL needs to be in the 1.0.x or 1.1.x range.
+   As mentioned elsewhere, BitShares-Core depends on the third-party libraries "Boost" and "OpenSSL". These libraries need to be in certain version ranges. At the moment, Boost needs to be between 1.58 and 1.69. OpenSSL needs to be in the 1.0.x or 1.1.x range.
 
    * Boost:
      We don't yet support the default boost version in brew, so we need to get an older version of boost from our own HomeBrew Tap:
@@ -48,13 +48,13 @@ BitShares OS X Build Instructions
    brew install google-perftools
    ```
 
-7. Clone the Bitshares repository:
+7. Clone the BitShares-Core repository:
    ```
    git clone https://github.com/bitshares/bitshares-core.git
    cd bitshares-core
    ```
 
-8. Build BitShares:
+8. Build BitShares-Core:
    ```
    git submodule update --init --recursive
    cmake .
