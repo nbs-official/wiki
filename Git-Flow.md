@@ -97,9 +97,9 @@ For a release,
     in the `master` branch.
   * Send pull request to https://github.com/bitshares/doxygen.bitshares.org with
     new content in html format.
-    Note: a) The HTML files are hosted on Github Pages, thus the `CNAME` file in
-    the target directory need to be kept. b) Need to edit `index.html`, remove
-    the "Build Status" CI badges.
+    * Note: the HTML files are hosted on Github Pages, thus the `CNAME` file in
+    the target directory need to be kept. 
+    * Note: need to edit `index.html`, remove the "Build Status" CI badges.
   * Send pull request to https://github.com/bitshares/dev.bitshares.works with
     new content in xml format.
 16. Update date of last core [download page of bitshares.org site](
