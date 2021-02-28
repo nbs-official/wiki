@@ -57,6 +57,7 @@ For a release,
    data, the answer is yes.
    2. FC version usually has been bumped already during development, but it
    doesn't harm if check again.
+   3. Check version in the `sonar-project.properties` file
 1. A "release" branch is created based on "develop" or "hardfork".
 2. A draft of release notes is prepared as a Github issue, with links to issues
    and pull requests, and info that users might have interest in.
