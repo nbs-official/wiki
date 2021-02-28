@@ -158,7 +158,7 @@ In general we want changes in the README to be visible fast in `master`.
 
 1. Update the README.md of the `release` candidate.
 2. Merge `release` into `master`.
-3. Merge back `release` into `develop`.
+3. Merge `release` back into `develop`.
 4. Merge `release` into `testnet` and/or merge `develop` into `hardfork`
    if changes need to be visible in the branches, or wait until these merges
    occur naturally.
