@@ -44,6 +44,7 @@ for these additional needs:
 3. Core devs coordinate regular merges from "develop" into "hardfork".
 4. Both "develop" and "hardfork" should always remain compatible with mainnet,
    i. e. a full replay must be possible.
+   * the planned version is set in the `sonar-project.properties` file
 
 
 ## How To Create a Release
@@ -156,7 +157,8 @@ taken:
 In general we want changes in the README to be visible fast in `master`.
 
 1. Update the README.md of the `release` candidate.
-2. Merge `release` to `master`.
-3. Merge back `release` to `develop`.
-4. Merge `develop` into `hardfork` and `testnet` if changes need to be visible
-   in all the branches or wait until this merges occur naturally.
+2. Merge `release` into `master`.
+3. Merge back `release` into `develop`.
+4. Merge `release` into `testnet` and/or merge `develop` into `hardfork`
+   if changes need to be visible in the branches, or wait until these merges
+   occur naturally.
