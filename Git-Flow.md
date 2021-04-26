@@ -64,7 +64,11 @@ For a release,
 3. The "release" branch is merged into "testnet".
 4. For a hardfork release, the hardfork date is adapted directly on the
    testnet branch.
-5. The "testnet" branch is tagged as test-<i>version</i>.
+5. The "testnet" branch is tagged as test-<i>version</i>. A pre-release is
+   created for that tag, with a link to the draft release notes.
+   Create binaries for Linux, macOS and Windows with
+    [bitshares-gitian](https://github.com/bitshares/bitshares-gitian) and
+   upload them to the pre-release page.
 6. Bugfixes for the release are created on the "release" branch and merged into
    "testnet". Additional test-<i>version</i>s are tagged as needed.
 7. After sufficient testing, the release must be approved. In the case of a
@@ -79,8 +83,8 @@ For a release,
     on "master". Create the tag by git command line and push to github.
     This is needed for Docker to catch the new tag.
   * Note: normally, a docker build will be triggered automatically in docker
-    cloud after the tag is pushed. If it did not trigger, add the *explicit* tag
-    name (but not a *regex* tag name) in docker cloud and manually trigger the
+    hub after the tag is pushed. If it did not trigger, add the *explicit* tag
+    name (but not a *regex* tag name) in docker hub and manually trigger the
     build. The new tag name can be removed after the build is finished.
 13. Create binaries for Linux, macOS and Windows with
     [bitshares-gitian](https://github.com/bitshares/bitshares-gitian).
@@ -120,13 +124,12 @@ a new pull request between `testnet` and `new_branch`, merge `new_branch` to
 **Note 3:** When creating tag for testnet do it from the command line with
 `git tag`. Github don't have the option to create a tag without a release.
 
-**Note 4:** <strike>the tag commit can be changed</strike>.
-Don't change tags on github. This is a source of confusion, and of
-irreproducible bug reports. Make new one is better (ex: test-3.0.1).
+**Note 4:** Don't change tags on github. This is a source of confusion, and of
+irreproducible bug reports. Making a new one is better (ex: test-3.0.1).
 
-**Note 5:** Do not mark releases as "pre release" unless there is a real new
+**Note 5:** Do not mark mainnet releases as "pre-release" unless there is a new
 version coming immediately after.
-Never upgrade "pre release" to "release" as new emails to subscribers will not
+Never upgrade "pre-release" to "release" as new emails to subscribers will not
 be sent when doing so.
 
 
