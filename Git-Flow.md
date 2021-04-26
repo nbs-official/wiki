@@ -78,7 +78,7 @@ For a release,
 9. Bump docs sub-module which links to wiki.
 10. Update Doxyfile with the planned version in the "release" branch.
 11. Update CONTRIBUTORS.txt in the "release" branch according to instructions
-    inside. Update the CONTRIBUTORS.txt file in FC too.
+    inside. Update the CONTRIBUTORS.txt file in FC too, and bump FC if needed.
 12. The "release" branch is merged into "master", and a *version* tag is created
     on "master". Create the tag by git command line and push to github.
     This is needed for Docker to catch the new tag.
