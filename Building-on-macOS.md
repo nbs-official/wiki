@@ -19,10 +19,10 @@ BitShares-Core Build Instructions for macOS
    ```
 
    Note:
-   As mentioned elsewhere, BitShares-Core depends on the third-party libraries "Boost" and "OpenSSL". These libraries need to be in certain version ranges. At the moment, Boost needs to be between 1.58 and 1.69. OpenSSL needs to be in the 1.0.x or 1.1.x range.
+   As mentioned elsewhere, BitShares-Core depends on the third-party libraries "Boost" and "OpenSSL". These libraries need to be in certain version ranges. At the moment, Boost needs to be between 1.58 and 1.74. OpenSSL needs to be in the 1.0.x or 1.1.x range.
 
    * Boost:
-     We don't yet support the default boost version in brew, so we need to get an older version of boost from our own HomeBrew Tap:
+     It's likely that the default boost version in brew has issues or not yet supported by us. If you just want to build BitShares-Core, use an older version of boost from our own HomeBrew Tap:
      ```
      brew install bitshares/boost/boost@1.69
      ```
@@ -30,6 +30,12 @@ BitShares-Core Build Instructions for macOS
      ```
      brew link --force --overwrite boost@1.69
      ```
+
+     Nevertheless, if you would like to experiment or test newer boost libraries, you can try:
+     ```
+     brew install boost
+     ```
+
 
    * OpenSSL:
      As of writing, we support the latest OpenSSL in brew. You may have an older version of OpenSSL than is required. If so, have brew get the latest:
